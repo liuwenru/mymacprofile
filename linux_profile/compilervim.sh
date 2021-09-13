@@ -1,0 +1,12 @@
+CFLAGS=-fPIC ./configure \
+  --with-features=huge \
+  --enable-multibyte \
+  --enable-luainterp=yes \
+  --enable-perlinterp=yes \
+  --enable-cscope \
+  --enable-pythoninterp=no \
+  --enable-python3interp=yes \
+  --enable-rubyinterp==yes \
+  --with-python3-command=python3 \
+  --with-tlib=ncurses \
+  --prefix=/opt/vim-8.2

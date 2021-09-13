@@ -1,0 +1,6 @@
+.DS_Store
+.classpath
+.factorypath
+.vim-bookmarks
+*.swp
+.vscode
