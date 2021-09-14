@@ -134,6 +134,8 @@ tmux_conf_theme_status_attr="none"
 #     - #{circled_session_name}
 #     - #{hostname}
 #     - #{hostname_ssh}
+#     - #{hostname_full}
+#     - #{hostname_full_ssh}
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_terminal_title="#h ❐ #S ● #I #W"
@@ -144,6 +146,8 @@ tmux_conf_theme_terminal_title="#h ❐ #S ● #I #W"
 #     - #{circled_session_name}
 #     - #{hostname}
 #     - #{hostname_ssh}
+#     - #{hostname_full}
+#     - #{hostname_full_ssh}
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_window_status_fg="$tmux_conf_theme_colour_3"
@@ -159,6 +163,8 @@ tmux_conf_theme_window_status_format="#I #W"
 #     - #{circled_session_name}
 #     - #{hostname}
 #     - #{hostname_ssh}
+#     - #{hostname_full}
+#     - #{hostname_full_ssh}
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_window_status_current_fg="$tmux_conf_theme_colour_1"
@@ -188,10 +194,10 @@ tmux_conf_theme_window_status_last_attr="none"
 #tmux_conf_theme_left_separator_sub="|"
 #tmux_conf_theme_right_separator_main=""
 #tmux_conf_theme_right_separator_sub="|"
-tmux_conf_theme_left_separator_main="\\uE0B0"  # /!\ you don't need to install Powerline
-tmux_conf_theme_left_separator_sub="\\uE0B1"   #   you only need fonts patched with
-tmux_conf_theme_right_separator_main="\\uE0B2" #   Powerline symbols or the standalone
-tmux_conf_theme_right_separator_sub="\\uE0B3"  #   PowerlineSymbols.otf font, see README.md
+tmux_conf_theme_left_separator_main='\uE0B0'  # /!\ you don't need to install Powerline
+tmux_conf_theme_left_separator_sub='\uE0B1'   #   you only need fonts patched with
+tmux_conf_theme_right_separator_main='\uE0B2' #   Powerline symbols or the standalone
+tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see README.md
 
 # status left/right content:
 #   - separate main sections with "|"
@@ -205,6 +211,8 @@ tmux_conf_theme_right_separator_sub="\\uE0B3"  #   PowerlineSymbols.otf font, se
 #     - #{circled_session_name}
 #     - #{hostname_ssh}
 #     - #{hostname}
+#     - #{hostname_full}
+#     - #{hostname_full_ssh}
 #     - #{loadavg}
 #     - #{mouse}
 #     - #{pairing}
@@ -219,7 +227,8 @@ tmux_conf_theme_right_separator_sub="\\uE0B3"  #   PowerlineSymbols.otf font, se
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_status_left=" ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} "
-tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
+# tmux_conf_theme_status_right=" #{prefix}#{mouse}#{pairing}#{synchronized}#{?battery_status,#{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} "
+tmux_conf_theme_status_right=""
 
 # status left style
 tmux_conf_theme_status_left_fg="$tmux_conf_theme_colour_6,$tmux_conf_theme_colour_7,$tmux_conf_theme_colour_8"
@@ -312,7 +321,7 @@ tmux_conf_theme_clock_style="24"
 #   - false (default)
 # on macOS, this requires installing reattach-to-user-namespace, see README.md
 # on Linux, this requires xsel or xclip
-tmux_conf_copy_to_os_clipboard=false
+tmux_conf_copy_to_os_clipboard=true
 
 
 # -- user customizations -------------------------------------------------------
@@ -329,18 +338,97 @@ set -g mouse off
 #set -g status-keys vi
 #set -g mode-keys vi
 
+# 设定绑定的快捷键
 # replace C-b by C-a instead of using both prefixes
 set -gu prefix2
 unbind C-a
 unbind C-b
 set -g prefix C-j
 bind C-j send-prefix
+# set -g default-terminal "screen-256color" # colors!
+set -g default-terminal "xterm-256color" # colors!
+setw -g xterm-keys on
+set -g escape-time 50                 # 解决 ESC 键延迟 详细的说明查看https://zhuanlan.zhihu.com/p/47801331
+set -g repeat-time 300                # increase repeat timeout 表示间隔按键时等待的最大时长，解决使用 prefix 之后联系调整窗口大小时需要长按多次的问题
+unbind e # 关闭使用Prefix+e 键打开编辑模式
+
+set-option -g automatic-rename on
+set-option -g automatic-rename-format '#{b:pane_current_path}:#{b:pane_current_command}'
+
+set -s focus-events on
+# 对水平窗口的快捷键
+bind | split-window -h 
+bind - split-window -v
+
+# 调整分屏大小的快捷键
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
 
 # move status line to top
-set -g status-position top
+#set -g status-position top
+set -g history-limit 10000000                 # boost history
+set -g display-time 0
+# -- tpm -----------------------------------------------------------------------
 
+# while I don't use tpm myself, many people requested official support so here
+# is a seamless integration that automatically installs plugins in parallel
+
+# whenever a plugin introduces a variable to be used in 'status-left' or
+# 'status-right', you can use it in 'tmux_conf_theme_status_left' and
+# 'tmux_conf_theme_status_right' variables.
+
+# by default, launching tmux will update tpm and all plugins
+#   - true (default)
+#   - false
+tmux_conf_update_plugins_on_launch=false
+
+# by default, reloading the configuration will update tpm and all plugins
+#   - true (default)
+#   - false
+tmux_conf_update_plugins_on_reload=false
+
+# by default, reloading the configuration will uninstall tpm and plugins when no
+# plugins are enabled
+#   - true (default)
+#   - false
+tmux_conf_uninstall_plugins_on_reload=false
+
+# /!\ the tpm bindings differ slightly from upstream:
+#   - installing plugins: <prefix> + I
+#   - uninstalling plugins: <prefix> + Alt + u
+#   - updating plugins: <prefix> + u
+
+# /!\ do not add set -g @plugin 'tmux-plugins/tpm'
+# /!\ do not add run '~/.tmux/plugins/tpm/tpm'
+
+# 添加需要的插件
+# to enable a plugin, use the 'set -g @plugin' syntax:
+# visit https://github.com/tmux-plugins for available plugins
+set -g @plugin 'tmux-plugins/tmux-copycat'
+#set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+# tmux-resurrect 插件配置项说明
+# set -g @resurrect-save 'S' # 修改保存指令为S
+# set -g @resurrect-restore 'R' 修改恢复指令为R
+# set -g @resurrect-dir '/some/path' 修改会话数据的保持路径，此处不能使用除了$HOME, $HOSTNAME, ~之外的环境变量
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+
+# tmux-continuum 插件配置项说明
+# set -g @continuum-save-interval '1440' 默认每隔15mins备份一次，如下设置的是一天一次
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on' # 启用自动恢复
+set -g @continuum-save-interval '0' # 关闭自动备份，只需设置时间间隔为 0
+
+# tmux-better-mouse-mode 插件配置说明
+set -g @plugin 'nhdaly/tmux-better-mouse-mode'
+set -g @scroll-down-exit-copy-mode "on"
+set -g @plugin 'tmux-plugins/tmux-copycat'
 
 # -- custom variables ----------------------------------------------------------
+
 # to define a custom #{foo} variable, define a POSIX shell function between the
 # '# EOF' and the '# "$@"' lines. Please note that the opening brace { character
 # must be on the same line as the function name otherwise the parse won't detect
@@ -352,16 +440,16 @@ set -g status-position top
 # # /!\ do not remove the following line
 # EOF
 #
+# # /!\ do not "uncomment" the functions: the leading "# " characters are needed
+#
 # weather() {
 #   curl -m 1 wttr.in?format=3 2>/dev/null
 #   sleep 900 # sleep for 15 minutes, throttle network requests whatever the value of status-interval
 # }
 #
 # online() {
-#   ping -t 1 -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
+#   ping -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
 # }
 #
 # "$@"
 # # /!\ do not remove the previous line
-
-

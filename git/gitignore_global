@@ -1,6 +1,30 @@
+# common
+
 .DS_Store
+
+# java develop
+
 .classpath
 .factorypath
+
+# vim
+
 .vim-bookmarks
-*.swp
+\*.swp
+
+# vscode
+
 .vscode
+.devcontainer
+
+# autoenv
+
+.inenv
+.outenv
+
+# nodejs develop
+
+node_modules
+
+# clangd 
+.cache
