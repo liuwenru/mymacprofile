@@ -4,7 +4,7 @@
 	name = liuwenru
 	email = ijarvis@sina.com
 [commit]
-	template = /Users/liuwenru/.stCommitMsg
+	template = ~/.stCommitMsg
 [merge]
 	tool = vimdiff
 	conflictstyle = diff3
