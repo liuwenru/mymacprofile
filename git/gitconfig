@@ -12,6 +12,7 @@
 	tool = vimdiff
 [core]
 	excludesFile = ~/.gitignore_global
+	editor = vim
 [pull]
 	rebase = false
 	ff = only
