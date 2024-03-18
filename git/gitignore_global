@@ -25,3 +25,6 @@
 # nodejs develop
 
 node_modules
+
+# clangd 
+.cache
