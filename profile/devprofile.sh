@@ -52,6 +52,10 @@ if command -v kubectl >/dev/null 2>&1; then
 fi
 if command -v docker >/dev/null 2>&1; then
   source <(docker completion ${SHELLUSE})
+  if [[ $SHELLUSE == "zsh" ]]; then
+    zstyle ':completion:*:*:docker:*' option-stacking yes
+    zstyle ':completion:*:*:docker-*:*' option-stacking yes
+  fi
 fi
 
 envname=$(uname)
