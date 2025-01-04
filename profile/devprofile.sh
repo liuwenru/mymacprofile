@@ -46,13 +46,13 @@ export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
 
 # Some bash or zsh complete
-SHELLUSE=$(basename $SHELL)
-if command -v kubectl >/dev/null 2>&1; then
-  source <(kubectl completion ${SHELLUSE})
-fi
-if command -v docker >/dev/null 2>&1; then
-  source <(docker completion ${SHELLUSE})
-fi
+# SHELLUSE=$(basename $SHELL)
+# if command -v kubectl >/dev/null 2>&1; then
+#   source <(kubectl completion ${SHELLUSE})
+# fi
+# if command -v docker >/dev/null 2>&1; then
+#   source <(docker completion ${SHELLUSE})
+# fi
 
 envname=$(uname)
 case ${envname} in
