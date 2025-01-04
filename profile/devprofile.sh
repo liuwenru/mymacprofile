@@ -6,8 +6,10 @@ export TERM=xterm-256color
 export PATH=$HOME/.bin:/usr/local/bin:$HOME/.local/bin:$PATH
 #export GOPROXY=https://goproxy.io,direct
 export LESS="-RXF" #mycli 等插件在工作时会每次都单独显示一次结果，所以使用此变量控制
+export DOCKER_BUILDKIT=0
 
 # alias settings
+alias dock=docker
 alias svn='svn --username liuwr --password ${svnpassword}'
 alias l='ls -lh'
 alias git='git --no-pager'
@@ -42,6 +44,15 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND="false"
 export JAVA_TOOL_OPTIONS="-Duser.language=en" # 设置默认的JDK属性
 export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
+
+# Some bash or zsh complete
+SHELLUSE=$(basename $SHELL)
+if command -v kubectl >/dev/null 2>&1; then
+  source <(kubectl completion ${SHELLUSE})
+fi
+if command -v docker >/dev/null 2>&1; then
+  source <(docker completion ${SHELLUSE})
+fi
 
 envname=$(uname)
 case ${envname} in
