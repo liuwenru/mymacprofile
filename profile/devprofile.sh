@@ -4,7 +4,7 @@ export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
 export PATH=$HOME/.bin:/usr/local/bin:$HOME/.local/bin:$PATH
-export GOPROXY=https://goproxy.io,direct
+#export GOPROXY=https://goproxy.io,direct
 export LESS="-RXF" #mycli 等插件在工作时会每次都单独显示一次结果，所以使用此变量控制
 
 # alias settings
