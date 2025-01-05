@@ -54,11 +54,10 @@ completionfile=$(dirname $0)/../completions/
 #   autoload -Uz compinit
 #   compinit -u
 # fi
-# if command -v kubectl >/dev/null 2>&1; then
-#   # source <(kubectl completion ${SHELLUSE})
-#   echo "111"
-#   source ${completionfile}/_kubectl
-# fi
+if command -v kubectl >/dev/null 2>&1; then
+  # source <(kubectl completion ${SHELLUSE})
+  source ${completionfile}/_kubectl
+fi
 
 envname=$(uname)
 case ${envname} in
