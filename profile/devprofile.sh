@@ -47,15 +47,18 @@ export CXXFLAGS="-g -O0"
 
 # Some bash or zsh complete
 SHELLUSE=$(basename $SHELL)
+completionfile=$(dirname $0)/../completions/
 if command -v kubectl >/dev/null 2>&1; then
-  source <(kubectl completion ${SHELLUSE})
+  # source <(kubectl completion ${SHELLUSE})
+  source ${completionfile}/_kubectl
 fi
 if command -v docker >/dev/null 2>&1; then
-  source <(docker completion ${SHELLUSE})
-  if [[ $SHELLUSE == "zsh" ]]; then
-    zstyle ':completion:*:*:docker:*' option-stacking yes
-    zstyle ':completion:*:*:docker-*:*' option-stacking yes
-  fi
+  source ${completionfile}/_docker
+  # source <(docker completion ${SHELLUSE})
+  # if [[ $SHELLUSE == "zsh" ]]; then
+  #   zstyle ':completion:*:*:docker:*' option-stacking yes
+  #   zstyle ':completion:*:*:docker-*:*' option-stacking yes
+  # fi
 fi
 
 envname=$(uname)
