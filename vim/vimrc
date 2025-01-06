@@ -55,6 +55,9 @@ Plug 'https://github.com/skywind3000/asyncrun.vim'
 " vim 高亮选择内容
 Plug 'machakann/vim-highlightedyank'
 
+" vim editorconfig 的支持
+Plug 'editorconfig/editorconfig-vim'
+
 " vim git svn状态显示
 if has('nvim') || has('patch-8.0.902')
   Plug 'mhinz/vim-signify'
