@@ -173,6 +173,36 @@
       <id>aliyun</id>
       <repositories>
         <repository>
+          <id>central</id>
+          <url>https://maven.aliyun.com/repository/central</url>
+          <releases>
+            <enabled>true</enabled>
+            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
+              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
+            <updatePolicy>daily</updatePolicy>
+            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>jcenter</id>
+          <url>https://maven.aliyun.com/repository/jcenter</url>
+          <releases>
+            <enabled>true</enabled>
+            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
+              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
+            <updatePolicy>daily</updatePolicy>
+            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
           <id>spring-plugin</id>
           <url>https://maven.aliyun.com/repository/spring-plugin</url>
           <releases>
