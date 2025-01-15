@@ -44,7 +44,7 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND="false"
 export JAVA_TOOL_OPTIONS="-Duser.language=en" # 设置默认的JDK属性
 export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
-
+export NODE_OPTIONS=--openssl-legacy-provider
 # Some bash or zsh complete
 SHELLUSE=$(basename $SHELL)
 completionfile=$(dirname $0)/../completions/
