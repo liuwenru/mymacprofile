@@ -10,6 +10,8 @@ export DOCKER_BUILDKIT=0
 
 # alias settings
 alias dock=docker
+alias dockeraarch64='DOCKER_HOST=ssh://root@192.168.182.150 docker'
+alias dockeramd='DOCKER_HOST=ssh://root@192.168.188.150 docker'
 alias svn='svn --username liuwr --password ${svnpassword}'
 alias l='ls -lh'
 alias git='git --no-pager'
