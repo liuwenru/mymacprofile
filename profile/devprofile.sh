@@ -83,6 +83,7 @@ Darwin)
   alias sha256sum='shasum -a 256'
   alias jd='java -jar ~/workspace/devtools/jd-gui.jar'
   alias luyten='java -jar ~/workspace/devtools/luyten.jar'
+  export MANPAGER=cat
   export GPG_TTY=$(tty)
   export devtools_home="/Users/liuwenru/tools/mactools"
   export MANPATH="/usr/local/man:${devtools_home}/dash_docs/linux_manpages:$MANPATH"
