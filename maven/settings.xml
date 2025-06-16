@@ -16,7 +16,8 @@
  values (values used when the setting is not specified) are provided.
 -->
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <!-- localRepository
          The path to the local repository maven will use to store artifacts. 构建系统本地仓库的路径
          Default: ${user.home}/.m2/repository
@@ -38,8 +39,10 @@
         <offline>false</offline>
   -->
   <!-- pluginGroups
-         This is a list of additional group identifiers that will be searched when resolving plugins by their prefix, i.e.
-         when invoking a command line like "mvn prefix:goal". Maven will automatically add the group identifiers
+         This is a list of additional group identifiers that will be searched when resolving plugins by
+  their prefix, i.e.
+         when invoking a command line like "mvn prefix:goal". Maven will automatically add the group
+  identifiers
          "org.apache.maven.plugins" and "org.codehaus.mojo" if these are not already contained in the list.
   -->
   <pluginGroups>
@@ -112,7 +115,8 @@
       <mirrorOf>*</mirrorOf>
     </mirror> -->
   </mirrors>
-  <!-- 根据环境参数来调整构建配置的列表。对应 pom.xml 中 profile 元素（只包含 id、activation、repositories、pluginRepositories 和 properties 元素）
+  <!-- 根据环境参数来调整构建配置的列表。对应 pom.xml 中 profile 元素（只包含 id、activation、repositories、pluginRepositories 和
+  properties 元素）
         如果一个 settings.xml 中的 profile 被激活，它的值会覆盖任何定义在 pom.xml 中带有相同 id 的 profile -->
   <profiles>
     <profile>
@@ -202,36 +206,30 @@
             <enabled>false</enabled>
           </snapshots>
         </repository>
-        <repository>
+        <!-- <repository>
           <id>spring-plugin</id>
           <url>https://maven.aliyun.com/repository/spring-plugin</url>
           <releases>
             <enabled>true</enabled>
-            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
-              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
             <updatePolicy>daily</updatePolicy>
-            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
             <checksumPolicy>warn</checksumPolicy>
           </releases>
           <snapshots>
             <enabled>false</enabled>
           </snapshots>
-        </repository>
-        <repository>
+        </repository> -->
+        <!-- <repository>
           <id>spring</id>
           <url>https://maven.aliyun.com/repository/spring</url>
           <releases>
             <enabled>true</enabled>
-            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
-              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
             <updatePolicy>daily</updatePolicy>
-            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
             <checksumPolicy>warn</checksumPolicy>
           </releases>
           <snapshots>
             <enabled>false</enabled>
           </snapshots>
-        </repository>
+        </repository> -->
         <repository>
           <id>gradle-plugin</id>
           <url>https://maven.aliyun.com/repository/gradle-plugin</url>
