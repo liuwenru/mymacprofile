@@ -19,8 +19,11 @@ alias gits='git status'
 alias sshkeyadd="ssh-add ~/.ssh/id_rsa && ssh-add ~/.ssh/id_rsa_work"
 alias mvn='mvn -DskipTests -Dmaven.test.skip=true'
 alias sshlinuxamd64dev='ssh root@192.168.188.150'
+alias moshlinuxamd64dev='mosh root@192.168.188.150'
 alias sshlinuxaarch64dev='ssh root@192.168.182.150'
+alias moshlinuxaarch64dev='mosh root@192.168.182.150'
 alias sshlinuxaarch64openeulerdev='ssh root@192.168.182.149'
+alias moshlinuxaarch64openeulerdev='mosh root@192.168.182.149'
 alias sshmacdev='ssh root@192.168.149.192'
 alias ll='ls -lah'
 alias curl='curl -k'
@@ -40,7 +43,7 @@ zstyle :omz:plugins:ssh-agent identities ~/.ssh/{id_rsa,id_rsa_work}
 zstyle :omz:plugins:ssh-agent lazy yes
 
 export SAVEHIST=300
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bold"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,bold"
 export ZSH_AUTOSUGGEST_STRATEGY=(history)
 export ZSH_AUTOSUGGEST_MANUAL_REBIND="false"
 
