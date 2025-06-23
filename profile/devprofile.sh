@@ -49,6 +49,7 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND="false"
 
 # Develop Settings
 export JAVA_TOOL_OPTIONS="-Duser.language=en" # 设置默认的JDK属性
+export MAVEN_OPTS="-DskipTests -Dmaven.test.skip=true  -Dmaven.javadoc.skip=true -Dmaven.artifact.threads=16 -Daether.dependencyCollector.impl=bf"
 export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
 # export NODE_OPTIONS=--openssl-legacy-provider
