@@ -100,10 +100,28 @@
         </server> 
     -->
   <servers>
-    <server>
+    <!-- <server>
       <id>epoint-nexus</id>
       <username>epointyanfa</username>
       <password>epoint_yanfa</password>
+    </server> -->
+    <server>
+      <id>epoint-nexus</id>
+      <username>admin</username>
+      <password>Epoint491001!@</password>
+    </server>
+    <server>
+      <id>release_cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_maven_1_1</id>
+      <username>cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_85fdade4f42b4167abd0132135360d71</username>
+      <password>f7Z=b_5KjV</password>
+    </server>
+    <server>
+      <id>snapshot_cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_maven_2_1</id>
+      <username>cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_85fdade4f42b4167abd0132135360d71</username>
+      <password>f7Z=b_5KjV</password>
+    </server>
+    <server>
+      <id>z_mirrors</id>
     </server>
   </servers>
   <mirrors>
@@ -115,7 +133,8 @@
       <mirrorOf>*</mirrorOf>
     </mirror> -->
   </mirrors>
-  <!-- 根据环境参数来调整构建配置的列表。对应 pom.xml 中 profile 元素（只包含 id、activation、repositories、pluginRepositories 和
+  <!-- 根据环境参数来调整构建配置的列表。对应 pom.xml 中 profile 元素（只包含
+  id、activation、repositories、pluginRepositories 和
   properties 元素）
         如果一个 settings.xml 中的 profile 被激活，它的值会覆盖任何定义在 pom.xml 中带有相同 id 的 profile -->
   <profiles>
@@ -300,7 +319,8 @@
         <repository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <url>http://192.168.0.99:8081/nexus/content/groups/public/</url>
+          <url>https://192.168.188.146:9000/repository/epoint/</url>
+          <!-- <url>http://192.168.0.99:8081/nexus/content/groups/public/</url> -->
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -329,7 +349,8 @@
         <pluginRepository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <url>http://192.168.0.99:8081/nexus/content/groups/public/</url>
+          <!-- <url>http://192.168.0.99:8081/nexus/content/groups/public/</url> -->
+          <url>https://192.168.188.146:9000/repository/epoint/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>

@@ -49,7 +49,8 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND="false"
 
 # Develop Settings
 export JAVA_TOOL_OPTIONS="-Duser.language=en" # 设置默认的JDK属性
-export MAVEN_OPTS="-DskipTests -Dmaven.test.skip=true  -Dmaven.javadoc.skip=true -Dmaven.artifact.threads=16 -Daether.dependencyCollector.impl=bf"
+export MAVEN_ARGS="-T 4C"
+export MAVEN_OPTS="-Xmx2048m -Xms1024m -Djava.awt.headless=true -DskipTests -Dmaven.test.skip=true  -Dmaven.javadoc.skip=true -Dmaven.artifact.threads=16 -Daether.dependencyCollector.impl=bf -Daether.connector.basic.downstreamThreads=20 -Daether.connector.basic.upstreamThreads=20 -Daether.dependencyCollector.bf.threads=10  -Daether.connector.https.securityMode=insecure -Daether.syncContext.named.time=300 -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Dmaven.wagon.httpconnectionManager.maxPerRoute=100 -Dmaven.wagon.httpconnectionManager.maxTotal=200 -Dmaven.wagon.http.retryHandler.count=10"
 export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
 # export NODE_OPTIONS=--openssl-legacy-provider
