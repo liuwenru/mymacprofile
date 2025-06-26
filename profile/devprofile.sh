@@ -86,7 +86,7 @@ Linux)
 Darwin)
   # echo -n " welcome Mac dev............."
   alias sha256sum='shasum -a 256'
-  alias jd='java -jar ~/workspace/devtools/jd-gui.jar'
+  alias jd='java -Djd-gui.cfg=/Users/liuwenru/workspace/devtools/jd-gui.cfg -jar ~/workspace/devtools/jd-gui.jar'
   alias luyten='java -jar ~/workspace/devtools/luyten.jar'
   export MANPAGER=cat
   export GPG_TTY=$(tty)
