@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- This is the configuration file for Maven. It can be specified at two levels:
-  1. User Level. This settings.xml file provides configuration for a single user,
-                 and is normally provided in ${user.home}/.m2/settings.xml.
-                 NOTE: This location can be overridden with the CLI option:
-                 -s /path/to/user/settings.xml
-  2. Global Level. This settings.xml file provides configuration for all Maven
-                 users on a machine (assuming they're all using the same Maven
-                 installation). It's normally provided in
-                 ${maven.home}/conf/settings.xml.
-                 NOTE: This location can be overridden with the CLI option:
-                 -gs /path/to/global/settings.xml
- The sections in this sample file are intended to give you a running start at
- getting the most out of your Maven installation. Where appropriate, the default
- values (values used when the setting is not specified) are provided.
--->
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
@@ -119,9 +103,6 @@
       <id>snapshot_cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_maven_2_1</id>
       <username>cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_85fdade4f42b4167abd0132135360d71</username>
       <password>f7Z=b_5KjV</password>
-    </server>
-    <server>
-      <id>z_mirrors</id>
     </server>
   </servers>
   <mirrors>
