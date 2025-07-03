@@ -4,47 +4,46 @@
 	name = planb
 	email = ijarvispro@sina.com
 [commit]
-template = ~/.stCommitMsg
+	template = ~/.stCommitMsg
 [merge]
-tool = vimdiff
-conflictstyle = diff3
+	tool = vimdiff
+	conflictstyle = diff3
 [diff]
-tool = vimdiff
+	tool = vimdiff
 [core]
-excludesfile = ~/.gitignore_global
-editor = vim
+	excludesfile = ~/.gitignore_global
+	editor = vim
 [pull]
-rebase = false
-ff = only
+	rebase = false
+	ff = only
 [credential]
-helper = store
+	helper = store
 [difftool "sourcetree"]
-cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-path =
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
 [mergetool "sourcetree"]
-cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-trustExitCode = true
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
 [alias]
-pl = pull --no-ff --no-commit
-lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-cm = commit --verbose
-me = merge --no-commit --no-ff
-st = status
-gitlabmr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
-lgs = log --stat
+	pl = pull --no-ff --no-commit
+	lg = log --pretty=format:'%C(yellow)%h%C(reset) %C(green)%an%C(reset) %C(blue)%ad%C(reset) %s' --date=format:'%Y-%m-%d-%H:%M:%S' --stat
+	cm = commit --verbose
+	me = merge --no-commit --no-ff
+	st = status
+	gitlabmr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
+	lgs = log --stat
 [init]
-defaultBranch = main
+	defaultBranch = main
 [filter "lfs"]
-clean = git-lfs clean -- %f
-smudge = git-lfs smudge -- %f
-process = git-lfs filter-process
-required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 [oh-my-zsh]
-hide-status = 1
-hide-info = 1
+	hide-status = 1
+	hide-info = 1
 [http]
 	version = HTTP/1.1
 	postBuffer = 524288000
 [safe]
 	directory = /root/
-	directory = /root/workspace/javaworkspace/apps-jar
