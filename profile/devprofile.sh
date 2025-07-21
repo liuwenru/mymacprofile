@@ -6,8 +6,8 @@ export TERM=xterm-256color
 export PATH=$HOME/.bin:/usr/local/bin:$HOME/.local/bin:$PATH
 #export GOPROXY=https://goproxy.io,direct
 export LESS="-RXF" #mycli 等插件在工作时会每次都单独显示一次结果，所以使用此变量控制
-export DOCKER_BUILDKIT=0
-
+export DOCKER_BUILDKIT=1
+export BUILDX_EXPERIMENTAL=1
 # alias settings
 alias dock=docker
 alias dockeraarch64='DOCKER_HOST=ssh://root@192.168.182.150 docker'

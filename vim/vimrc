@@ -19,7 +19,7 @@ Plug 'https://github.com/Yggdroot/indentLine.git'
 Plug 'https://github.com/Chiel92/vim-autoformat.git'
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install --frozen-lockfile --production',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
 
 " 代码自动化注释插件
 Plug 'preservim/nerdcommenter'
@@ -288,4 +288,4 @@ let g:go_highlight_operators = 1
 let g:go_def_mode = 'godef'
 let g:go_decls_includes = "func,type"
 
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+"autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
