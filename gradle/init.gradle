@@ -1,6 +1,6 @@
 allprojects {
 	repositories {
-		mavenLocal()
+		  mavenLocal()
 	    // 	maven { name "Bstek" ; url "http://nexus.bsdn.org/content/groups/public/" ;  allowInsecureProtocol = true }
       maven{ url 'https://maven.aliyun.com/repository/central'}
       maven{ url 'https://maven.aliyun.com/repository/public' }
@@ -10,10 +10,12 @@ allprojects {
       maven{ url 'https://maven.aliyun.com/repository/spring-plugin'}
       maven{ url 'https://maven.aliyun.com/mvn/guide'}
       maven{ url 'https://maven.aliyun.com/repository/apache-snapshots'}
+      mavenCentral()
 	}
 
 	buildscript {
 		repositories {
+      mavenLocal()
       //		maven { name "Bstek" ; url 'http://nexus.bsdn.org/content/groups/public/' ; allowInsecureProtocol = true }
       maven{ url 'https://maven.aliyun.com/repository/central'}
       maven{ url 'https://maven.aliyun.com/repository/public' }
@@ -23,6 +25,7 @@ allprojects {
       maven{ url 'https://maven.aliyun.com/repository/spring-plugin'}
       maven{ url 'https://maven.aliyun.com/mvn/guide'}
       maven{ url 'https://maven.aliyun.com/repository/apache-snapshots'}
+      mavenCentral()
 		}
 	}
 }

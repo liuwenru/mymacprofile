@@ -29,6 +29,7 @@ alias ll='ls -lah'
 alias curl='curl -k'
 alias wget='wget --no-check-certificate'
 alias tars='tar --strip-components=1 '
+alias ant='ant -Duser.home=~/workspace/javaworkspace/'
 
 # terminal Tools
 
