@@ -47,3 +47,6 @@
 	postBuffer = 524288000
 [safe]
 	directory = /root/
+	directory = /Users/liuwenru
+[http "https://pkg.re"]
+	followRedirects = true
