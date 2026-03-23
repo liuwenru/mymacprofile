@@ -427,6 +427,8 @@ set -g @plugin 'nhdaly/tmux-better-mouse-mode'
 set -g @scroll-down-exit-copy-mode "on"
 set -g @plugin 'tmux-plugins/tmux-copycat'
 
+set -g allow-passthrough on
+
 # -- custom variables ----------------------------------------------------------
 
 # to define a custom #{foo} variable, define a POSIX shell function between the

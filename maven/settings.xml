@@ -125,7 +125,7 @@
         <repository>
           <id>chinamaven</id>
           <name>chinamaven</name>
-          <url>https://repo1.maven.org/maven2/</url>
+          <url>https://mvnrepository.com/artifact/</url>
           <releases>
             <enabled>true</enabled>
             <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
@@ -141,7 +141,7 @@
         <repository>
           <id>apachemaven</id>
           <name>apachemaven</name>
-          <url>https://repo.maven.apache.org/maven2/</url>
+          <url>https://mvnrepository.com/artifact/</url>
           <releases>
             <enabled>true</enabled>
             <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
@@ -163,7 +163,7 @@
         <pluginRepository>
           <id>chinamaven</id>
           <name>chinamaven</name>
-          <url>https://repo1.maven.org/maven2/</url>
+          <url>https://mvnrepository.com/artifact/</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -206,30 +206,6 @@
             <enabled>false</enabled>
           </snapshots>
         </repository>
-        <!-- <repository>
-          <id>spring-plugin</id>
-          <url>https://maven.aliyun.com/repository/spring-plugin</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>daily</updatePolicy>
-            <checksumPolicy>warn</checksumPolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository> -->
-        <!-- <repository>
-          <id>spring</id>
-          <url>https://maven.aliyun.com/repository/spring</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>daily</updatePolicy>
-            <checksumPolicy>warn</checksumPolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository> -->
         <repository>
           <id>gradle-plugin</id>
           <url>https://maven.aliyun.com/repository/gradle-plugin</url>
@@ -300,8 +276,7 @@
         <repository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <url>https://192.168.188.8:9000/repository/epoint/</url>
-          <!-- <url>http://192.168.0.99:8081/nexus/content/groups/public/</url> -->
+          <url>https://192.168.188.8:9000/repository/maven-public/</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -312,13 +287,10 @@
         <repository>
           <id>chinamaven</id>
           <name>chinamaven</name>
-          <url>https://repo1.maven.org/maven2/</url>
+          <url>https://192.168.188.8:9000/repository/maven-public/</url>
           <releases>
             <enabled>true</enabled>
-            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
-              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
             <updatePolicy>daily</updatePolicy>
-            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
             <checksumPolicy>warn</checksumPolicy>
           </releases>
           <snapshots>
@@ -330,8 +302,7 @@
         <pluginRepository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <!-- <url>http://192.168.0.99:8081/nexus/content/groups/public/</url> -->
-          <url>https://192.168.188.8:9000/repository/epoint/</url>
+          <url>https://192.168.188.8:9000/repository/maven-public/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
@@ -343,7 +314,7 @@
         <pluginRepository>
           <id>chinamaven</id>
           <name>chinamaven</name>
-          <url>https://repo1.maven.org/maven2/</url>
+          <url>https://192.168.188.8:9000/repository/maven-public/</url>
           <releases>
             <enabled>true</enabled>
           </releases>
