@@ -429,6 +429,9 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 
 set -g allow-passthrough on
 
+bind-key -T copy-mode-vi MouseDrag1Pane send-keys -X clear-selection
+bind-key -T root MouseDrag1Pane if-shell "true" "" ""
+
 # -- custom variables ----------------------------------------------------------
 
 # to define a custom #{foo} variable, define a POSIX shell function between the
