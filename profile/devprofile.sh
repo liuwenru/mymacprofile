@@ -99,6 +99,7 @@ Darwin)
   export GROOVY_HOME="${devtools_home}/groovy"
   export GRADLE_HOME="${devtools_home}/gradle"
   export PATH="$ANT_HOME/bin:$MVN_HOME/bin:${GROOVY_HOME}/bin:$GRADLE_HOME/bin:$PATH"
+  alias tar='COPYFILE_DISABLE=1 tar --exclude=".*"'
   ;;
 *) ;;
 
