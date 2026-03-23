@@ -429,6 +429,8 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 
 set -g allow-passthrough on
 
+# 配置鼠标选择和panle 的功能
+set -g mouse on
 bind-key -T copy-mode-vi MouseDrag1Pane send-keys -X clear-selection
 bind-key -T root MouseDrag1Pane if-shell "true" "" ""
 
