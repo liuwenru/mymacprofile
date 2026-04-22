@@ -30,7 +30,7 @@ alias curl='curl -k'
 alias wget='wget --no-check-certificate -q --show-progress -o /dev/null '
 alias tars='tar --strip-components=1 '
 alias ant='ant -Duser.home=$HOME/workspace/javaworkspace/'
-
+alias s2sx='s2sx -max 100G'
 # terminal Tools
 
 # zsh https://github.com/hyperupcall/autoenv 配置
