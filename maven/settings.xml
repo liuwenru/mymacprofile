@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <!-- localRepository
          The path to the local repository maven will use to store artifacts. 构建系统本地仓库的路径
          Default: ${user.home}/.m2/repository
@@ -51,7 +50,7 @@
       <!-- 代理的协议 -->
       <protocol>http</protocol>
       <!-- 代理的主机名 -->
-      <host>127.0.0.1</host>
+      <host>192.168.188.8</host>
       <!-- 代理的端口 -->
       <port>1080</port>
       <!-- 代理的用户名，用户名和密码表示代理服务器认证的登录名和密码 -->
@@ -59,7 +58,7 @@
       <!-- 代理的密码 -->
       <!-- <password>somepassword</password> -->
       <!-- 不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，逗号分隔也很常见 -->
-      <nonProxyHosts>127.0.0.1|192.*.*.*</nonProxyHosts>
+      <nonProxyHosts>127.0.0.1|192.*.*.*|172.16.*.*</nonProxyHosts>
     </proxy>
   </proxies>
   <!-- servers
@@ -119,6 +118,29 @@
   properties 元素）
         如果一个 settings.xml 中的 profile 被激活，它的值会覆盖任何定义在 pom.xml 中带有相同 id 的 profile -->
   <profiles>
+    <profile>
+      <id>useproxy</id>
+      <proxies>
+        <proxy>
+          <!-- 代理的唯一定义符，用来区分不同的代理元素 -->
+          <id>localproxy</id>
+          <!-- 是否激活。当我们声明了一组代理，而某个时候只需要激活一个代理的时候 -->
+          <active>true</active>
+          <!-- 代理的协议 -->
+          <protocol>http</protocol>
+          <!-- 代理的主机名 -->
+          <host>192.168.188.8</host>
+          <!-- 代理的端口 -->
+          <port>1080</port>
+          <!-- 代理的用户名，用户名和密码表示代理服务器认证的登录名和密码 -->
+          <!-- <username>proxyuser</username> -->
+          <!-- 代理的密码 -->
+          <!-- <password>somepassword</password> -->
+          <!-- 不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，逗号分隔也很常见 -->
+          <nonProxyHosts>127.0.0.1|192.*.*.*|172.16.*.*</nonProxyHosts>
+        </proxy>
+      </proxies>
+    </profile>
     <profile>
       <id>chinamaven</id>
       <repositories>

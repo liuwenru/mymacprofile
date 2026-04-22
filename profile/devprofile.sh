@@ -18,6 +18,7 @@ alias git='git --no-pager'
 alias gits='git status'
 alias sshkeyadd="ssh-add ~/.ssh/id_rsa && ssh-add ~/.ssh/id_rsa_work"
 alias mvn='mvn -DskipTests -Dmaven.test.skip=true'
+alias rg='rg -S -U -a --binary'
 alias sshlinuxamd64dev='ssh root@192.168.188.150'
 alias moshlinuxamd64dev='mosh root@192.168.188.150'
 alias sshlinuxaarch64dev='ssh root@192.168.182.150'
