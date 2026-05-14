@@ -41,8 +41,10 @@ export AUTOENV_ENABLE_LEAVE="1"
 export AUTOENV_ASSUME_YES="1"
 
 # oh my zsh settings
-zstyle :omz:plugins:ssh-agent identities ~/.ssh/{id_rsa,id_rsa_work}
-zstyle :omz:plugins:ssh-agent lazy yes
+if [[ $SHELLUSE == "zsh" ]]; then
+  zstyle :omz:plugins:ssh-agent identities ~/.ssh/{id_rsa,id_rsa_work}
+  zstyle :omz:plugins:ssh-agent lazy yes
+fi
 
 export SAVEHIST=300
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bold"
@@ -57,18 +59,18 @@ export CFLAGS="-g -O0"
 export CXXFLAGS="-g -O0"
 # export NODE_OPTIONS=--openssl-legacy-provider
 # Some bash or zsh complete
-SHELLUSE=$(basename $SHELL)
-completionfile=$(dirname $0)/../completions/
+#SHELLUSE=$(basename $SHELL)
+#completionfile=$(dirname $0)/../completions/
 # if [[ $SHELLUSE == "zsh" ]]; then
 #   fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:${completionfile}
 #   zstyle ':completion::complete:*' use-cache 1
 #   autoload -Uz compinit
 #   compinit -u
 # fi
-if command -v kubectl >/dev/null 2>&1; then
+#if command -v kubectl >/dev/null 2>&1; then
   # source <(kubectl completion ${SHELLUSE})
-  source ${completionfile}/_kubectl
-fi
+#  source ${completionfile}/_kubectl
+#fi
 
 envname=$(uname)
 case ${envname} in

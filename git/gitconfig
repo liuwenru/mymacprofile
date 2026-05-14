@@ -1,7 +1,7 @@
 # This is Git's per-user configuration file.
 [user]
 # Please adapt and uncomment the following lines:
-	name = planb
+	name = liuwr
 	email = ijarvispro@sina.com
 [commit]
 	template = ~/.stCommitMsg
@@ -48,5 +48,6 @@
 [safe]
 	directory = /root/
 	directory = /Users/liuwenru
+	directory = /opt/gitlab-runner
 [http "https://pkg.re"]
 	followRedirects = true
