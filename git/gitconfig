@@ -14,7 +14,7 @@
 	excludesfile = ~/.gitignore_global
 	editor = vim
 [pull]
-	rebase = false
+	rebase = true
 	ff = only
 [credential]
 	helper = store
