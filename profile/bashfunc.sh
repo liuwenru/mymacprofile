@@ -62,3 +62,6 @@ dockersave() {
         return 1
     fi
 }
+
+iptdump() { for t in filter nat mangle raw security; do printf -- "-------------  %s  -------------\n" "$t"; iptables -t "$t" --list --line-number -n -v; done }
+iptsave() { for t in filter nat mangle raw; do printf -- "-------------  %s  -------------\n" "$t"; iptables-save -t "$t" -c; done; }
