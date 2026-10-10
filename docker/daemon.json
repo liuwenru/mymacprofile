@@ -11,19 +11,24 @@
       "Hard": 65535
     }
   },
-  "max-concurrent-downloads": 50,
+  "features": {
+    "buildkit": false
+  },
+  "bip": "186.189.0.1/24",
+  "max-concurrent-downloads": 20,
+  "max-download-attempts": 15,
   "log-driver": "json-file",
   "log-level": "warn",
   "log-opts": {
     "max-size": "500m",
-    "max-file": "3"
+    "max-file": "5"
   },
-  "exec-opts": [
-    "native.cgroupdriver=systemd"
-  ],
-  "insecure-registries": [
-    "registry.epoint.com.cn"
-  ],
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "insecure-registries": ["registry.epoint.com.cn", "docker.epoint.com.cn"],
   "data-root": "/var/lib/docker",
-  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com", "https://registry.docker-cn.com"]
+  "proxies": {
+    "http-proxy": "http://192.168.188.8:1080",
+    "https-proxy": "http://192.168.188.8:1080",
+    "no-proxy": "*.epoint.com.cn,127.0.0.0/8,*.myhuaweicloud.com,192.168.0.0/16"
+  }
 }

@@ -81,30 +81,32 @@
             目录被创建时的权限 
           <directoryPermissions>775</directoryPermissions>
         </server> 
-    -->
+  -->
   <servers>
-    <!-- <server>
+    <server>
       <id>epoint-nexus</id>
       <username>epointyanfa</username>
       <password>epoint_yanfa</password>
-    </server> -->
-    <server>
-      <id>epoint-nexus</id>
-      <username>admin</username>
-      <password>Epoint491001!@</password>
     </server>
     <server>
       <id>release_cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_maven_1_1</id>
-      <username>cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_85fdade4f42b4167abd0132135360d71</username>
-      <password>f7Z=b_5KjV</password>
+      <username>${env.CLOUD_MAVEN_USERNAME}</username>
+      <password>${env.CLOUD_MAVEN_PASSWORD}</password>
     </server>
     <server>
       <id>snapshot_cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_maven_2_1</id>
-      <username>cn-north-4_d27a3c3ea8db47b5a63082e586718a9c_85fdade4f42b4167abd0132135360d71</username>
-      <password>f7Z=b_5KjV</password>
+      <username>${env.CLOUD_MAVEN_USERNAME}</username>
+      <password>${env.CLOUD_MAVEN_PASSWORD}</password>
     </server>
   </servers>
   <mirrors>
+    <mirror>
+      <id>maven-default-http-blocker</id>
+      <mirrorOf>external:http:*,!epoint-nexus</mirrorOf>
+      <name>Block external HTTP repositories except the internal Epoint Nexus</name>
+      <url>http://0.0.0.0/</url>
+      <blocked>true</blocked>
+    </mirror>
     <!-- 中央仓库在中国的镜像 -->
     <!-- <mirror>
       <id>maven.net.cn</id>
@@ -118,83 +120,6 @@
   properties 元素）
         如果一个 settings.xml 中的 profile 被激活，它的值会覆盖任何定义在 pom.xml 中带有相同 id 的 profile -->
   <profiles>
-    <profile>
-      <id>useproxy</id>
-      <proxies>
-        <proxy>
-          <!-- 代理的唯一定义符，用来区分不同的代理元素 -->
-          <id>localproxy</id>
-          <!-- 是否激活。当我们声明了一组代理，而某个时候只需要激活一个代理的时候 -->
-          <active>true</active>
-          <!-- 代理的协议 -->
-          <protocol>http</protocol>
-          <!-- 代理的主机名 -->
-          <host>192.168.188.8</host>
-          <!-- 代理的端口 -->
-          <port>1080</port>
-          <!-- 代理的用户名，用户名和密码表示代理服务器认证的登录名和密码 -->
-          <!-- <username>proxyuser</username> -->
-          <!-- 代理的密码 -->
-          <!-- <password>somepassword</password> -->
-          <!-- 不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，逗号分隔也很常见 -->
-          <nonProxyHosts>127.0.0.1|192.*.*.*|172.16.*.*</nonProxyHosts>
-        </proxy>
-      </proxies>
-    </profile>
-    <profile>
-      <id>chinamaven</id>
-      <repositories>
-        <repository>
-          <id>chinamaven</id>
-          <name>chinamaven</name>
-          <url>https://mvnrepository.com/artifact/</url>
-          <releases>
-            <enabled>true</enabled>
-            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
-              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
-            <updatePolicy>daily</updatePolicy>
-            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
-            <checksumPolicy>warn</checksumPolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>apachemaven</id>
-          <name>apachemaven</name>
-          <url>https://mvnrepository.com/artifact/</url>
-          <releases>
-            <enabled>true</enabled>
-            <!-- 该元素指定更新发生的频率。maven 会比较本地 pom.xml 和远程 pom.xml 的时间戳。
-              这里的选项是：always（一直），daily（默认，每日），interval：X（这里 X 是以分钟为单位的时间间隔），或者 never（从不）。 -->
-            <updatePolicy>daily</updatePolicy>
-            <!-- 当 maven 验证构件校验文件失败时该怎么做：ignore（忽略），fail（失败），或者 warn（警告）-->
-            <checksumPolicy>warn</checksumPolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-      <properties>
-        <!-- 如果该 profile 被激活，则可以在 pom.xml 中使用 ${user.install} -->
-        <user.install>${user.home}/our-project</user.install>
-      </properties>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>chinamaven</id>
-          <name>chinamaven</name>
-          <url>https://mvnrepository.com/artifact/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
     <profile>
       <id>aliyun</id>
       <repositories>
@@ -298,22 +223,9 @@
         <repository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <url>https://192.168.188.8:9000/repository/maven-public/</url>
+          <url>http://192.168.0.99:8081/nexus/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>chinamaven</id>
-          <name>chinamaven</name>
-          <url>https://192.168.188.8:9000/repository/maven-public/</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>daily</updatePolicy>
-            <checksumPolicy>warn</checksumPolicy>
           </releases>
           <snapshots>
             <enabled>true</enabled>
@@ -324,21 +236,10 @@
         <pluginRepository>
           <id>epoint-nexus</id>
           <name>Epoint Nexus Repository</name>
-          <url>https://192.168.188.8:9000/repository/maven-public/</url>
+          <url>http://192.168.0.99:8081/nexus/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-          <id>chinamaven</id>
-          <name>chinamaven</name>
-          <url>https://192.168.188.8:9000/repository/maven-public/</url>
-          <releases>
-            <enabled>true</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
@@ -348,8 +249,7 @@
     </profile>
   </profiles>
   <activeProfiles>
-    <activeProfile>aliyun</activeProfile>
-    <activeProfile>chinamaven</activeProfile>
+    <!-- <activeProfile>aliyun</activeProfile> -->
     <activeProfile>epoint-nexus</activeProfile>
   </activeProfiles>
 </settings>

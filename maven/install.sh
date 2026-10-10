@@ -1,6 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [[ ! -f ~/.m2/settings.xml ]]; then
-  ln -s $(pwd)/settings.xml ~/.m2/settings.xml
-  ln -s $(pwd)/jvm.config ~/.m2/jvm.config
-fi
+set -eu
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+exec "$script_dir/../install.sh" "$@" maven

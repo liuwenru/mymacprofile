@@ -1,11 +1,43 @@
+def repoUrl = "http://192.168.0.99:8081/nexus/content/groups/public/"
+def repoUsername = "epointyanfa"
+def repoPassword = "epoint_yanfa"
+gradle.beforeSettings { settings ->
+    settings.pluginManagement {
+        repositories {
+            maven {
+                url = settings.uri(repoUrl)
+                allowInsecureProtocol = true
+
+                credentials {
+                    username = repoUsername
+                    password = repoPassword
+                }
+            }
+
+            gradlePluginPortal()
+            mavenCentral()
+        }
+    }
+}
+
+
 allprojects {
 	repositories {
 	    // 	maven { name "Bstek" ; url "http://nexus.bsdn.org/content/groups/public/" ;  allowInsecureProtocol = true }
       // mavenLocal()
-      maven{ url='https://maven.aliyun.com/repository/central'}
-      maven{ url='https://maven.aliyun.com/repository/gradle-plugin'}
-      maven{ url='https://maven.aliyun.com/repository/spring'}
-      maven{ url='https://maven.aliyun.com/repository/spring-plugin'}
+      // maven{ url='https://maven.aliyun.com/repository/central'}
+      // maven{ url='https://maven.aliyun.com/repository/gradle-plugin'}
+      // maven{ url='https://maven.aliyun.com/repository/spring'}
+      // maven{ url='https://maven.aliyun.com/repository/spring-plugin'}
+      maven{ url='https://192.168.188.8:9000/repository/maven-public/'}
+      maven{ 
+        url='http://192.168.0.99:8081/nexus/content/groups/public/'
+        allowInsecureProtocol = true
+        credentials {
+                username = 'epointyanfa'
+                password = 'epoint_yanfa'
+        }
+      }
       mavenCentral()
 	}
 
@@ -13,11 +45,24 @@ allprojects {
 		repositories {
       //		maven { name "Bstek" ; url 'http://nexus.bsdn.org/content/groups/public/' ; allowInsecureProtocol = true }
       // mavenLocal()
-      maven{ url='https://maven.aliyun.com/repository/central'}
-      maven{ url='https://maven.aliyun.com/repository/gradle-plugin'}
-      maven{ url='https://maven.aliyun.com/repository/spring'}
-      maven{ url='https://maven.aliyun.com/repository/spring-plugin'}
+      // maven{ url='https://maven.aliyun.com/repository/central'}
+      // maven{ url='https://maven.aliyun.com/repository/gradle-plugin'}
+      // maven{ url='https://maven.aliyun.com/repository/spring'}
+      // maven{ url='https://maven.aliyun.com/repository/spring-plugin'}
+      maven{ url='https://192.168.188.8:9000/repository/maven-public/'}
+      maven{ 
+        url='http://192.168.0.99:8081/nexus/content/groups/public/'
+        allowInsecureProtocol = true
+        credentials {
+                username = 'epointyanfa'
+                password = 'epoint_yanfa'
+        }
+      }
       mavenCentral()
 		}
 	}
 }
+
+
+
+

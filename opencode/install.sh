@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-
-
-ln -s $(pwd)/AGENTS.md  ~/.config/opencode/AGENTS.md
+set -eu
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+exec "$script_dir/../install.sh" "$@" opencode

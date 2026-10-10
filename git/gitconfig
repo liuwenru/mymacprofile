@@ -49,5 +49,6 @@
 	directory = /root/
 	directory = /Users/liuwenru
 	directory = /opt/gitlab-runner
+	directory = /root/workspace/javaworkspace/apps-jar
 [http "https://pkg.re"]
 	followRedirects = true

@@ -10,12 +10,7 @@
 # vim
 
 .vim-bookmarks
-\*.swp
-
-# vscode
-
-.vscode
-.devcontainer
+*.swp
 
 # autoenv
 

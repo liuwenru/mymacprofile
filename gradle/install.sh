@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-ln -s $(pwd)/init.gradle ~/.gradle/init.gradle
-ln -s $(pwd)/gradle.properties ~/.gradle/gradle.properties
+set -eu
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+exec "$script_dir/../install.sh" "$@" gradle

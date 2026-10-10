@@ -1,0 +1,16 @@
+[Unit]
+Description=Mount fdoc via sshfs
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+ExecStart=/usr/bin/sshfs -o rw,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,IdentityFile=/root/.ssh/id_rsa_work,StrictHostKeyChecking=no root@192.168.203.10:/opt/data/tmp/.liuwenru /root/remotefs/fdoc.liuwenru
+ExecStop=/bin/fusermount -u /root/remotefs/fdoc.liuwenru
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

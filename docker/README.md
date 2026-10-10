@@ -1,5 +1,7 @@
 # 常用 Docker 配置方法
 
+仓库中的 `daemon.json` 保留了工作环境使用的 `registry.epoint.com.cn` insecure registry。该设置会跳过该 registry 的 TLS 要求，只应部署到明确需要访问此内网 registry 的机器。
+
 ## 配置 docker 镜像加速
 
 ```bash

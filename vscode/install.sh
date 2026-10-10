@@ -1,14 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# 备份配置文件
-
-envname=$(uname)
-case ${envname} in
-Linux)
-    echo " linux install"
-    ;;
-Darwin)
-    cp ~/Library/Application\ Support/Code/User/settings.json ./
-    ;;
-*) ;;
-esac
+set -eu
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+exec "$script_dir/../install.sh" "$@" vscode
