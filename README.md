@@ -9,7 +9,7 @@
 | `profile/` | Bash、Zsh、平台配置、常用 alias 和函数 |
 | `git/` | Git 全局配置和 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
-| `vim/`、`tmux/`、`vscode/` | 编辑器和终端工具配置 |
+| `vim/`、`neovim/`、`tmux/`、`vscode/` | 编辑器和终端工具配置 |
 | `docker/` | Docker daemon 配置示例 |
 | `linux_dev/`、`mac_dev/`、`win_dev/` | 平台专用配置或历史产物 |
 | `opencode/` | OpenCode 全局约定 |
@@ -27,6 +27,16 @@
 ```bash
 ./install.sh profile git maven
 ```
+
+Neovim 可以通过顶层安装器或目录内的快捷脚本单独安装：
+
+```bash
+./install.sh neovim
+# 或
+./neovim/install.sh
+```
+
+安装器会把 `~/.config/nvim` 链接到仓库中的 `neovim/`；已有配置会先按时间戳备份。
 
 如果目标文件已经存在，脚本会先创建带时间戳的备份，再建立软链接。Profile 安装完成后，在 `~/.bashrc` 和 `~/.zshrc` 中按需加入：
 

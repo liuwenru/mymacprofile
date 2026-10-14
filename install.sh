@@ -11,7 +11,7 @@ usage() {
 Usage: ./install.sh [--dry-run] TARGET...
 
 Targets:
-  profile  git  maven  gradle  vim  tmux  vscode  opencode  all
+  profile  git  maven  gradle  vim  neovim  tmux  vscode  opencode  all
 
 Examples:
   ./install.sh --dry-run all
@@ -84,6 +84,9 @@ install_target() {
     vim)
       link_config "$script_dir/vim/vimrc" "$HOME/.vimrc"
       ;;
+    neovim)
+      link_config "$script_dir/neovim" "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+      ;;
     tmux)
       link_config "$script_dir/tmux/tmux.conf" "$HOME/.tmux.conf"
       link_config "$script_dir/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
@@ -113,7 +116,7 @@ while (($#)); do
   case $1 in
     --dry-run) dry_run=true ;;
     -h|--help) usage; exit 0 ;;
-    all) targets=(profile git maven gradle vim tmux vscode opencode) ;;
+    all) targets=(profile git maven gradle vim neovim tmux vscode opencode) ;;
     *) targets+=("$1") ;;
   esac
   shift
