@@ -15,6 +15,13 @@ return {
           strings = "none",
           variables = "none",
         },
+        highlights = {
+          Comment = { fg = "#4b5263", bg = "none", fmt = "italic" },
+          SpecialComment = { fg = "#4b5263", bg = "none", fmt = "italic" },
+          ["@comment"] = { fg = "#4b5263", bg = "none", fmt = "italic" },
+          ["@comment.documentation"] = { fg = "#4b5263", bg = "none", fmt = "italic" },
+          TSComment = { fg = "#4b5263", bg = "none", fmt = "italic" },
+        },
         lualine = {
           transparent = false,
         },
