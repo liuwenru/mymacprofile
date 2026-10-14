@@ -13,3 +13,5 @@ export PAGER=""
 
 export EDITOR=vim
 export VISUAL=vim
+
+alias dockerimages='docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>"'
