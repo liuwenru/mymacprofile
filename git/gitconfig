@@ -52,3 +52,5 @@
 	directory = /root/workspace/javaworkspace/apps-jar
 [http "https://pkg.re"]
 	followRedirects = true
+[log]
+	date = format:%Y-%m-%d %H:%M:%S
