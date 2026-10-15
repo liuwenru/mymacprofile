@@ -32,6 +32,9 @@
 	st = status
 	gitlabmr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
 	lgs = log --stat
+	lf = log --date=format-local:'%Y-%m-%d %H:%M:%S' --pretty=format:'%C(auto)%h%Creset %C(cyan)%ad%Creset %C(yellow)%an%Creset %s' --stat
+	logf = log --date=format-local:'%Y-%m-%d %H:%M:%S' --pretty=format:'%C(auto)%h%Creset %C(cyan)%ad%Creset %C(yellow)%an%Creset %s' --stat
+	logsf = log --date=format-local:'%Y-%m-%d %H:%M:%S' --pretty=format:'%C(auto)%h%Creset %C(cyan)%ad%Creset %C(yellow)%an%Creset %s' --shortstat
 [init]
 	defaultBranch = main
 [filter "lfs"]
@@ -52,3 +55,5 @@
 	directory = /root/workspace/javaworkspace/apps-jar
 [http "https://pkg.re"]
 	followRedirects = true
+[log]
+	date = format:%Y-%m-%d %H:%M:%S
