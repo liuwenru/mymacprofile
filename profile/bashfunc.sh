@@ -118,3 +118,12 @@ killps() {
     ;;
   esac
 }
+
+tsrun() (
+    set -o pipefail
+    stdbuf -oL -eL "$@" 2>&1 |
+        gawk '{
+            printf "%s %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0
+            fflush()
+        }'
+)
