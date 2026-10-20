@@ -127,3 +127,15 @@ tsrun() (
             fflush()
         }'
 )
+sarfull() {
+    LC_ALL=C S_TIME_FORMAT=ISO S_COLORS=never \
+        stdbuf -oL sar "$@" |
+    gawk '
+        /^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/ {
+            print strftime("%Y-%m-%d"), $0
+            fflush()
+            next
+        }
+        { print; fflush() }
+    '
+}
