@@ -120,16 +120,17 @@ killps() {
 }
 
 tsrun() (
-    set -o pipefail
-    stdbuf -oL -eL "$@" 2>&1 |
-        gawk '{
+  set -o pipefail
+  stdbuf -oL -eL "$@" 2>&1 |
+    gawk '{
             printf "%s %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0
             fflush()
         }'
 )
+
 sarfull() {
-    LC_ALL=C S_TIME_FORMAT=ISO S_COLORS=never \
-        stdbuf -oL sar "$@" |
+  LC_ALL=C S_TIME_FORMAT=ISO S_COLORS=never \
+    stdbuf -oL sar "$@" |
     gawk '
         /^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/ {
             print strftime("%Y-%m-%d"), $0
@@ -139,3 +140,71 @@ sarfull() {
         { print; fflush() }
     '
 }
+
+repeat_header() {
+  local line=0
+
+  if [[ ${1-} == "-l" ]]; then
+    line=${2-}
+    if [[ ! $line =~ ^[1-9][0-9]*$ ]]; then
+      echo "用法：repeat_header [-l 行号] 命令 [参数...]" >&2
+      return 2
+    fi
+    shift 2
+  fi
+
+  "$@" | awk -v line="$line" '
+        !found {
+            if ((line == 0 && /[^[:space:]]/) ||
+                (line > 0 && NR == line)) {
+                header = $0
+                found = 1
+            }
+            print
+            next
+        }
+        {
+            if (count > 0 && count % 10 == 0)
+                print header
+            print
+            count++
+        }
+    '
+}
+
+tarzst() (
+  set -o pipefail
+
+  local src name out outdir
+  local -a excludes=()
+
+  src=$(cd -- "${1:-.}" && pwd -P) || return 1
+  name=$(basename -- "$src")
+  [[ "$src" == / ]] && name=root
+
+  out=${2:-"$name.tar.zst"}
+  outdir=$(cd -- "$(dirname -- "$out")" && pwd -P) || return 1
+  out="${outdir%/}/$(basename -- "$out")"
+
+  case "$out" in
+  "${src%/}/"*)
+    excludes=(--exclude="./${out#"${src%/}/"}")
+    ;;
+  esac
+
+  tar -C "$src" "${excludes[@]}" -cf - . |
+    zstd -T0 -3 -o "$out"
+)
+untarzst() (
+  set -o pipefail
+
+  if [[ -z ${1:-} ]]; then
+    echo "用法：untarzst 压缩包 [目标目录]" >&2
+    return 2
+  fi
+
+  local dest="${2:-.}"
+  mkdir -p -- "$dest" || return 1
+
+  zstd -dc -- "$1" | tar -C "$dest" -xf -
+)
