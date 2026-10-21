@@ -175,8 +175,38 @@ repeat_header() {
 tarzst() (
   set -o pipefail
 
-  local src name out outdir
+  local src name out outdir threads tool
   local -a excludes=()
+  local -a compressor=()
+
+  threads=${PZSTD_THREADS:-$(
+    nproc 2>/dev/null ||
+      busybox nproc 2>/dev/null ||
+      echo 1
+  )}
+
+  case "$threads" in
+  '' | *[^0-9]*)
+    echo "错误：线程数必须是正整数。" >&2
+    return 2
+    ;;
+  esac
+
+  if [[ "$threads" =~ ^0+$ ]]; then
+    echo "错误：线程数必须大于 0。" >&2
+    return 2
+  fi
+
+  if command -v pzstd >/dev/null 2>&1; then
+    tool=pzstd
+    compressor=(pzstd -p "$threads")
+  elif command -v zstd >/dev/null 2>&1; then
+    tool=zstd
+    compressor=(zstd "-T$threads")
+  else
+    echo "错误：未找到 pzstd 或 zstd，请安装其中一个。" >&2
+    return 1
+  fi
 
   src=$(cd -- "${1:-.}" && pwd -P) || return 1
   name=$(basename -- "$src")
@@ -186,15 +216,19 @@ tarzst() (
   outdir=$(cd -- "$(dirname -- "$out")" && pwd -P) || return 1
   out="${outdir%/}/$(basename -- "$out")"
 
+  # 输出文件位于源目录内时，排除压缩包自身
   case "$out" in
   "${src%/}/"*)
     excludes=(--exclude="./${out#"${src%/}/"}")
     ;;
   esac
 
+  echo "使用 $tool 压缩，线程数：$threads，输出：$out" >&2
+
   tar -C "$src" "${excludes[@]}" -cf - . |
-    zstd -T0 -3 -o "$out"
+    "${compressor[@]}" -3 -o "$out"
 )
+
 untarzst() (
   set -o pipefail
 
@@ -204,7 +238,53 @@ untarzst() (
   fi
 
   local dest="${2:-.}"
+  local threads tool
+  local -a decompressor=()
+
+  threads=${PZSTD_THREADS:-$(
+    nproc 2>/dev/null ||
+      busybox nproc 2>/dev/null ||
+      echo 1
+  )}
+
+  case "$threads" in
+  '' | *[^0-9]*)
+    echo "错误：线程数必须是正整数。" >&2
+    return 2
+    ;;
+  esac
+
+  if [[ "$threads" =~ ^0+$ ]]; then
+    echo "错误：线程数必须大于 0。" >&2
+    return 2
+  fi
+
+  if command -v pzstd >/dev/null 2>&1; then
+    tool=pzstd
+    decompressor=(pzstd -p "$threads")
+  elif command -v zstd >/dev/null 2>&1; then
+    tool=zstd
+    decompressor=(zstd)
+  else
+    echo "错误：未找到 pzstd 或 zstd，请安装其中一个。" >&2
+    return 1
+  fi
+
+  if [[ -f "$1" && -r "$1" ]]; then
+    :
+  else
+    echo "错误：压缩包不存在或不可读：$1" >&2
+    return 1
+  fi
+
   mkdir -p -- "$dest" || return 1
 
-  zstd -dc -- "$1" | tar -C "$dest" -xf -
+  if [[ "$tool" == pzstd ]]; then
+    echo "使用 pzstd 解压，线程数：$threads，目标：$dest" >&2
+  else
+    echo "使用 zstd 解压，单线程解码，目标：$dest" >&2
+  fi
+
+  "${decompressor[@]}" -d -c -- "$1" |
+    tar -C "$dest" -xf -
 )
