@@ -57,3 +57,5 @@
 	followRedirects = true
 [log]
 	date = format:%Y-%m-%d %H:%M:%S
+[lfs]
+	concurrenttransfers = 16
