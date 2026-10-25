@@ -7,12 +7,13 @@
 # 工作时的一些配置和预定
 
 - 网络环境
-  对于一些网络资源如果直接链接不生效时可以使用如下命令配置代理访问,下载一些资源时建议失败了的话可以尝试三到四次
+  对于一些网络资源如果直接链接不生效时可以使用如下命令配置代理访问,下载一些资源时建议失败了的话可以尝试三到四次,你的内部 webfetch工具也可以多试两次
 
 ```bash
 if [[ $SHELL == "/bin/bash" ]];then set +o history; fi  && export http_proxy=http://192.168.188.8:1080 && export https_proxy=${http_proxy} && export no_proxy="*.epoint.com.cn,*.aliyun.*,192.168.0.0/16,172.0.0.0/8,127.0.0.1" &&  if [[ $SHELL == "/bin/bash" ]];then set -o history; fi
 ```
 
+- 如果一些页面抓取失败的可以试一下使用playwright-cli 这个插件或者 skills尝试抓取
 - 执行脚本时候记得 source ~/.zshrc 或者 source  ~/.bashrc
 - git的commit 和 push 操作请不要做，我需要人工去做
 
@@ -45,4 +46,4 @@ if [[ $SHELL == "/bin/bash" ]];then set +o history; fi  && export http_proxy=htt
 # 我工作环境的一些说明
 
 - 当和我和你一起工作时，我有三台主机环境，其中一台是 mac 作为我的桌面客户端，我一般使用 tssh 远程到192.168.188.150 和 192.168.182.150上去做开发，平时我有一些指令简称的 188.150 和 182.150 指的就是这两台机器，192.168.188.8 是我专门用来做代理出去的服务器地址，其中 http 协议代理接口地址是 192.168.188.8:1080 Socket5 协议代理地址是 192.168.188.8:7070
-- 我用的一些小工具脚本，有的时候你看到的是https://fdoc.epoint.com.cn:3366/tmp/.liuwenru/这个下载路径的，他对应的文件路径是188.150上的/root/remotefs/fdoc.liuwenru/，对 mac环境上就没有了，你要通过 scp 命令/opt/data/tmp/.liuwenru/来操作了，所以一些发布的时候你可以复制到这边来或者我贴一些地址的时候你需要对应的处理一下
+- 我用的一些小工具脚本，有的时候你看到的是https://fdoc.epoint.com.cn:3366/tmp/.liuwenru/这个下载路径的，他对应的文件路径是188.150上的/root/remotefs/fdoc.liuwenru/，对 mac环境上就没有了，你要通过 scp 命令/opt/data/tmp/.liuwenru/来操作了，所以一些发布的时候你可以复制到这边来或者我贴一些地址的时候你需要对应的处理一下，这里面的工具都是按照目录对于好的，你如果要使用的话请也整理好，不要那种 tmp 类文件满天飞
