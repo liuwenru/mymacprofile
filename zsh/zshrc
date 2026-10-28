@@ -31,7 +31,9 @@ source "$ZSH/oh-my-zsh.sh"
 [[ -s $HOME/.jabba/jabba.sh ]] && source "$HOME/.jabba/jabba.sh"
 if [[ -s $HOME/.bunvm/bunvm.sh ]]; then
   export BUNVM_DIR="$HOME/.bunvm"
-  source "$BUNVM_DIR/bunvm.sh"
+  # bunvm.sh splits "/usr/bin:/bin:..." with bash word splitting; without
+  # shwordsplit zsh adds "/usr/bin /bin /usr/sbin /sbin" as one PATH entry.
+  () { setopt local_options sh_word_split; source "$BUNVM_DIR/bunvm.sh" }
 fi
 
 # Regenerate opencode completions only when the binary is newer than the cache.
@@ -59,4 +61,8 @@ export LS_COLORS="${LS_COLORS}:di=38;5;39:ow=38;5;39:tw=38;5;39:st=38;5;39:ex=38
 
 # Re-load functions after oh-my-zsh so ours take precedence over its plugins.
 source "$_mymacprofile_root/profile/bashfunc.sh"
+
+# Tools above (e.g. gvm re-sourcing its default environment) assign the PATH
+# string, which typeset -U does not dedupe; re-assigning the array does.
+path=($path)
 unset _mymacprofile_root

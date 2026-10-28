@@ -97,7 +97,10 @@ unset _dir _path _nvm_default
 # gvm's default environment only exports GOROOT, GOPATH and PATH-like variables.
 [[ -r $HOME/.gvm/environments/default ]] && source "$HOME/.gvm/environments/default"
 
-# zsh: drop duplicates kept by gvm or later prepends, keeping the first occurrence.
+# zsh: drop duplicates, keeping the first occurrence. gvm assigns the PATH string,
+# which typeset -U does not dedupe, so re-assign the arrays once as well.
 if [[ -n ${ZSH_VERSION:-} ]]; then
   typeset -U path manpath
+  path=($path)
+  manpath=($manpath)
 fi
