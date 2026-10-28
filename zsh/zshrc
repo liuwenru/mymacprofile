@@ -1,0 +1,62 @@
+# Interactive zsh shared by macOS and Linux. Environment variables live in
+# profile/env.sh (loaded by ~/.zshenv); every tool below is optional.
+_mymacprofile_root=${${(%):-%x}:A:h:h}
+
+# Load user-generated completions before compinit scans the function path.
+fpath=(
+  $HOME/.zsh/completions(N/)
+  ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-completions/src(N/)
+  $fpath
+)
+[[ -n ${HOMEBREW_PREFIX:-} ]] && fpath=($HOMEBREW_PREFIX/share/zsh/site-functions(N/) $fpath)
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+source "$_mymacprofile_root/profile/profile.sh"
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+zstyle :omz:plugins:ssh-agent lazy no
+zstyle :omz:plugins:ssh-agent identities ~/.ssh/id_rsa ~/.ssh/id_rsa_work
+zstyle ':omz:plugins:nvm' lazy yes
+zstyle ':omz:plugins:nvm' lazy-cmd codex dsh dsh-tui dst firecrawl pn pnx
+plugins=(ssh-agent nvm)
+[[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-autosuggestions ]] && plugins=(zsh-autosuggestions $plugins)
+source "$ZSH/oh-my-zsh.sh"
+
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ -s $HOME/.gvm/scripts/gvm ]] && source "$HOME/.gvm/scripts/gvm"
+[[ -s $HOME/.autoenv/activate.sh ]] && source "$HOME/.autoenv/activate.sh"
+[[ -s $HOME/.jabba/jabba.sh ]] && source "$HOME/.jabba/jabba.sh"
+if [[ -s $HOME/.bunvm/bunvm.sh ]]; then
+  export BUNVM_DIR="$HOME/.bunvm"
+  source "$BUNVM_DIR/bunvm.sh"
+fi
+
+# Regenerate opencode completions only when the binary is newer than the cache.
+_opencode_bin="$HOME/.opencode/bin/opencode"
+_opencode_completion="$HOME/.zsh/completions/_opencode"
+if [[ -x "$_opencode_bin" ]]; then
+  if [[ ! -s "$_opencode_completion" || "$_opencode_bin" -nt "$_opencode_completion" ]]; then
+    mkdir -p "${_opencode_completion:h}"
+    if "$_opencode_bin" --completions zsh > "${_opencode_completion}.$$" && [[ -s "${_opencode_completion}.$$" ]]; then
+      mv -f "${_opencode_completion}.$$" "$_opencode_completion"
+    else
+      rm -f "${_opencode_completion}.$$"
+    fi
+  fi
+  [[ -s "$_opencode_completion" ]] && source "$_opencode_completion"
+fi
+unset _opencode_bin _opencode_completion
+
+(( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow --disable-ai)"
+(( $+commands[uv] )) && eval "$(uv generate-shell-completion zsh)"
+(( $+commands[uvx] )) && eval "$(uvx --generate-shell-completion zsh)"
+(( $+commands[mole] )) && eval "$(mole completion zsh 2>/dev/null)"
+(( $+commands[dircolors] )) && eval "$(dircolors -b)"
+export LS_COLORS="${LS_COLORS}:di=38;5;39:ow=38;5;39:tw=38;5;39:st=38;5;39:ex=38;5;82"
+
+# Re-load functions after oh-my-zsh so ours take precedence over its plugins.
+source "$_mymacprofile_root/profile/bashfunc.sh"
+unset _mymacprofile_root

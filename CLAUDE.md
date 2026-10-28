@@ -19,6 +19,7 @@
 | --- | --- |
 | `install.sh` | 顶层统一安装器，负责备份和创建软链接 |
 | `profile/` | Shell 公共配置、Bash/Zsh 配置、平台配置、alias 和函数 |
+| `zsh/` | 链接为 `~/.zshenv`、`~/.zprofile`、`~/.zshrc`，macOS 与两台 Linux 共用 |
 | `git/` | Git 全局配置和全局 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
 | `neovim/` | 基于 LazyVim 的 Neovim 配置 |
@@ -60,20 +61,27 @@ tmux 安装只链接 `tmux/tmux.conf` 到 `~/.tmux.conf`，旧的 `tmux.conf.loc
 
 ## Profile 架构
 
-推荐入口为 `profile/profile.sh`，实际加载顺序是：
+zsh 由 `zsh/` 下的三个文件接管，bash 入口为 `profile/profile.sh`，实际加载顺序是：
 
 ```text
-profile/profile.sh
-  -> profile/common.sh
-  -> profile/bash.sh 或 profile/zsh.sh
-  -> profile/platform/linux.sh、macos.sh 或 windows.sh
-  -> profile/bashfunc.sh
-  -> ~/.config/mymacprofile/local.sh
+~/.zshenv  -> zsh/zshenv    所有 zsh 进程（含脚本、ssh host cmd）
+  -> profile/env.sh         只放环境变量和 PATH，不输出、不调用外部命令
+~/.zprofile -> zsh/zprofile 登录 shell；再次加载 env.sh，抵消 macOS path_helper 的重排
+~/.zshrc   -> zsh/zshrc     仅交互 shell
+  -> profile/profile.sh
+       -> profile/env.sh（bash 从这里加载环境变量）
+       -> profile/common.sh
+       -> profile/bash.sh 或 profile/zsh.sh
+       -> profile/platform/linux.sh、macos.sh 或 windows.sh
+       -> profile/bashfunc.sh
+       -> ~/.config/mymacprofile/local.sh
+  -> oh-my-zsh 及可选工具（存在才加载）
 ```
 
 - `profile/devprofile.sh` 是旧配置的兼容入口，只转发到 `profile/profile.sh`。
-- Shell 共享设置放入 `profile/common.sh`，Shell 专属设置放入 `bash.sh` 或 `zsh.sh`。
-- 操作系统专属路径、alias 和环境变量放入 `profile/platform/` 对应文件。
+- 环境变量和 PATH 放入 `profile/env.sh`，平台差异用 `case $OSTYPE` 分支；该文件会被非交互 shell 加载，必须保持无输出、不调用外部命令。
+- 交互用的 alias 等放入 `profile/common.sh`，Shell 专属设置放入 `bash.sh` 或 `zsh.sh`，平台专属 alias 放入 `profile/platform/` 对应文件。
+- 路径使用 `$HOME`，不要写死 `/root` 或 `/Users/...`；可选工具和目录必须先判断存在再加载。
 - 凭据、机器私有路径及不应提交的设置放入 `~/.config/mymacprofile/local.sh`，模板见 `profile/local.example.sh`。
 - `profile/local.sh` 和 `*.local` 已被 `.gitignore` 忽略，不要把本机私密配置移回受版本控制的文件。
 

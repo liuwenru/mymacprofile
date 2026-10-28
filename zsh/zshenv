@@ -1,0 +1,3 @@
+# Read by every zsh, including scripts and `ssh host cmd`; environment only.
+# :A resolves the ~/.zshenv symlink back to this repository.
+source "${${(%):-%x}:A:h:h}/profile/env.sh"

@@ -11,7 +11,7 @@ usage() {
 Usage: ./install.sh [--dry-run] TARGET...
 
 Targets:
-  profile  git  maven  gradle  neovim  tmux  vscode  opencode  all
+  profile  zsh  git  maven  gradle  neovim  tmux  vscode  opencode  all
 
 Examples:
   ./install.sh --dry-run all
@@ -69,6 +69,11 @@ install_target() {
       printf 'Add this line to both shell rc files as needed:\n'
       printf '  source "${XDG_CONFIG_HOME:-$HOME/.config}/mymacprofile/profile/profile.sh"\n'
       ;;
+    zsh)
+      link_config "$script_dir/zsh/zshenv" "$HOME/.zshenv"
+      link_config "$script_dir/zsh/zprofile" "$HOME/.zprofile"
+      link_config "$script_dir/zsh/zshrc" "$HOME/.zshrc"
+      ;;
     git)
       link_config "$script_dir/git/gitconfig" "$HOME/.gitconfig"
       link_config "$script_dir/git/gitignore_global" "$HOME/.gitignore_global"
@@ -112,7 +117,7 @@ while (($#)); do
   case $1 in
     --dry-run) dry_run=true ;;
     -h|--help) usage; exit 0 ;;
-    all) targets=(profile git maven gradle neovim tmux vscode opencode) ;;
+    all) targets=(profile zsh git maven gradle neovim tmux vscode opencode) ;;
     *) targets+=("$1") ;;
   esac
   shift

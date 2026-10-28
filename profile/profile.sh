@@ -9,6 +9,10 @@ fi
 
 _mymacprofile_dir=$(cd "$(dirname "$_mymacprofile_source")" && pwd -P)
 
+# zsh already loaded env.sh from ~/.zshenv; loading it again is harmless.
+# shellcheck source=env.sh
+source "$_mymacprofile_dir/env.sh"
+
 # shellcheck source=common.sh
 source "$_mymacprofile_dir/common.sh"
 

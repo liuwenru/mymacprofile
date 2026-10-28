@@ -7,6 +7,7 @@
 | 目录 | 用途 |
 | --- | --- |
 | `profile/` | Bash、Zsh、平台配置、常用 alias 和函数 |
+| `zsh/` | `~/.zshenv`、`~/.zprofile`、`~/.zshrc`，三台环境共用 |
 | `git/` | Git 全局配置和 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
 | `neovim/`、`tmux/`、`vscode/` | 编辑器和终端工具配置 |
@@ -55,12 +56,18 @@ source "${XDG_CONFIG_HOME:-$HOME/.config}/mymacprofile/profile/profile.sh"
 ## Profile 加载顺序
 
 ```text
-profile/profile.sh
-  -> profile/common.sh
-  -> profile/bash.sh 或 profile/zsh.sh
-  -> profile/platform/linux.sh、macos.sh 或 windows.sh
-  -> profile/bashfunc.sh
-  -> ~/.config/mymacprofile/local.sh
+~/.zshenv  -> zsh/zshenv    所有 zsh 进程（含脚本、ssh host cmd）
+  -> profile/env.sh         只放环境变量和 PATH，不输出、不调用外部命令
+~/.zprofile -> zsh/zprofile 登录 shell；再次加载 env.sh，抵消 macOS path_helper 的重排
+~/.zshrc   -> zsh/zshrc     仅交互 shell
+  -> profile/profile.sh
+       -> profile/env.sh（bash 从这里加载环境变量）
+       -> profile/common.sh
+       -> profile/bash.sh 或 profile/zsh.sh
+       -> profile/platform/linux.sh、macos.sh 或 windows.sh
+       -> profile/bashfunc.sh
+       -> ~/.config/mymacprofile/local.sh
+  -> oh-my-zsh 及可选工具（存在才加载）
 ```
 
 `local.sh` 用于凭据、机器路径和不应提交的个人设置。可参考 `profile/local.example.sh`：
@@ -72,6 +79,8 @@ chmod 600 "${XDG_CONFIG_HOME:-$HOME/.config}/mymacprofile/local.sh"
 ```
 
 目前内网主机 alias 和固定工作路径为保持兼容，仍保留在 `profile/common.sh` 与平台文件中，后续再决定是否迁入本机配置。
+
+`zsh/` 与 `profile/env.sh` 中的路径一律使用 `$HOME`，目录或命令存在才加入 PATH 或加载，使同一份文件在 macOS 和 Linux 上都可用。
 
 ## Maven 凭据
 

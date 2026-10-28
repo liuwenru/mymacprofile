@@ -15,4 +15,11 @@
 # export CLOUD_MAVEN_USERNAME=""
 # export CLOUD_MAVEN_PASSWORD=""
 
+# Password used by the svn alias in common.sh.
+# export svnpassword=""
+
+# Machine-specific proxy, e.g. a local proxy client on macOS.
+# export http_proxy="http://127.0.0.1:1080"
+# export https_proxy="$http_proxy"
+
 # Add private work aliases and environment variables below.
