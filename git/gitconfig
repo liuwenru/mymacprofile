@@ -6,10 +6,10 @@
 [commit]
 	template = ~/.stCommitMsg
 [merge]
-	tool = vimdiff
+	tool = nvimdiff
 	conflictstyle = diff3
 [diff]
-	tool = vimdiff
+	tool = nvimdiff
 [core]
 	excludesfile = ~/.gitignore_global
 	editor = vim

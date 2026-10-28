@@ -9,7 +9,7 @@
 | `profile/` | Bash、Zsh、平台配置、常用 alias 和函数 |
 | `git/` | Git 全局配置和 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
-| `vim/`、`neovim/`、`tmux/`、`vscode/` | 编辑器和终端工具配置 |
+| `neovim/`、`tmux/`、`vscode/` | 编辑器和终端工具配置 |
 | `docker/` | Docker daemon 配置示例 |
 | `linux_dev/`、`mac_dev/`、`win_dev/` | 平台专用配置或历史产物 |
 | `opencode/` | OpenCode 全局约定 |

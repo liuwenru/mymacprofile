@@ -21,7 +21,6 @@
 | `profile/` | Shell 公共配置、Bash/Zsh 配置、平台配置、alias 和函数 |
 | `git/` | Git 全局配置和全局 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
-| `vim/` | 基于 vim-plug 的传统 Vim 配置，继续保留兼容 |
 | `neovim/` | 基于 LazyVim 的 Neovim 配置 |
 | `tmux/` | 基于旧版 Oh My Tmux 快照的稳定配置 |
 | `vscode/` | VS Code 设置、快捷键和配置导出脚本 |
@@ -39,7 +38,7 @@
 顶层 `install.sh` 是主要安装入口，支持以下目标：
 
 ```text
-profile git maven gradle vim neovim tmux vscode opencode all
+profile git maven gradle neovim tmux vscode opencode all
 ```
 
 安装前应优先使用 dry-run：
@@ -57,7 +56,7 @@ profile git maven gradle vim neovim tmux vscode opencode all
 
 安装器在目标已存在时会创建带时间戳的备份，然后建立指向仓库文件的软链接。各工具目录中的 `install.sh` 通常只负责定位自身路径并转发到顶层安装器，不要重复实现安装逻辑。
 
-当前已知不一致：顶层安装器和旧 tmux 插件脚本会引用 `tmux/tmux.conf.local`，但该文件目前不在仓库中。涉及 tmux 安装时不要假设该文件存在，也不要在未确认预期内容的情况下自动创建它。
+tmux 安装只链接 `tmux/tmux.conf` 到 `~/.tmux.conf`，旧的 `tmux.conf.local` 已废弃，不要再引入。
 
 ## Profile 架构
 
@@ -83,7 +82,6 @@ profile/profile.sh
 - `profile/default.conf` 是 Shadowrocket 分流配置，不是 Shell profile。修改前应查看文件头部链接的 Shadowrocket 配置手册，注意规则自上而下匹配，`FINAL` 必须作为兜底项。
 - `maven/settings.xml` 通过 `EPOINT_NEXUS_USERNAME`、`EPOINT_NEXUS_PASSWORD`、`CLOUD_MAVEN_USERNAME`、`CLOUD_MAVEN_PASSWORD` 读取凭据，不得写回明文密码。
 - `neovim/` 来自 LazyVim starter，修改前参考 `neovim/README.md` 和 LazyVim 官方文档。
-- `vim/` 与 `neovim/` 是并行配置；不要以迁移为由直接删除旧 Vim 配置。
 - `tmux/tmux.conf` 目前作为稳定的旧配置保留，现代化迁移应单独进行，不要顺手改变现有快捷键和插件行为。
 - `linux_dev/fuse3-aarch64/` 和 `linux_dev/fuse3-x86_64/` 包含离线二进制、静态库和高权限 mount helper。来源信息尚不完整，不要随意覆盖或视为可验证发布制品。
 

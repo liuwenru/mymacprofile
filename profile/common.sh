@@ -31,6 +31,9 @@ alias wget='wget --no-check-certificate --show-progress'
 alias tars='tar --strip-components=1'
 alias ant='ant -Duser.home=$HOME/workspace/javaworkspace/'
 alias s2sx='s2sx -max 100G'
+if command -v nvim >/dev/null 2>&1; then
+  alias vim=nvim
+fi
 
 export JAVA_TOOL_OPTIONS="-Duser.language=en"
 export MAVEN_ARGS="-T 4C"
