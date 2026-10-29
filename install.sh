@@ -101,6 +101,11 @@ install_target() {
       esac
       link_config "$script_dir/vscode/settings.json" "$vscode_dir/settings.json"
       link_config "$script_dir/vscode/keybindings.json" "$vscode_dir/keybindings.json"
+      # Remote-SSH reads machine settings on the server; Linux hosts share one file
+      # because their paths differ from the macOS settings.json.
+      if [[ $(uname -s) == Linux ]]; then
+        link_config "$script_dir/vscode/linux-settings.json" "$HOME/.vscode-server/data/Machine/settings.json"
+      fi
       ;;
     opencode)
       link_config "$script_dir/opencode/AGENTS.md" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/AGENTS.md"
