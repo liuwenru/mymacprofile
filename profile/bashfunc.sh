@@ -173,6 +173,41 @@ repeat_header() {
 }
 
 tarzst() (
+  case "${1:-}" in
+  -h | --help)
+    cat <<'EOF'
+用法：tarzst [源目录] [输出文件]
+      tarzst -h | --help
+
+将目录打包为 tar 并用 zstd 压缩（优先使用 pzstd 多线程）。
+
+参数：
+  源目录      要打包的目录，默认为当前目录 (.)
+  输出文件    输出路径，默认为 "<源目录名>.tar.zst"（放在当前目录）
+              源目录为 / 时默认名为 root.tar.zst
+
+选项：
+  -h, --help  显示本帮助并退出
+
+环境变量：
+  PZSTD_THREADS  压缩线程数，默认为 CPU 核数（nproc）
+
+说明：
+  - 压缩级别固定为 -3
+  - 优先使用 pzstd -p N；没有则退回 zstd -TN
+  - 输出文件位于源目录内时，会自动排除压缩包自身
+  - 归档内路径以 ./ 开头（相对源目录）
+
+示例：
+  tarzst                          # 打包当前目录
+  tarzst ~/project                # 生成 ./project.tar.zst
+  tarzst ~/project /tmp/p.tar.zst
+  PZSTD_THREADS=4 tarzst data
+EOF
+    return 0
+    ;;
+  esac
+
   set -o pipefail
 
   local src name out outdir threads tool
@@ -230,6 +265,36 @@ tarzst() (
 )
 
 untarzst() (
+  case "${1:-}" in
+  -h | --help)
+    cat <<'EOF'
+用法：untarzst 压缩包 [目标目录]
+      untarzst -h | --help
+
+解压 .tar.zst 压缩包（优先使用 pzstd 多线程）。
+
+参数：
+  压缩包      要解压的 .tar.zst 文件（必填）
+  目标目录    解压到的目录，默认为当前目录 (.)，不存在会自动创建
+
+选项：
+  -h, --help  显示本帮助并退出
+
+环境变量：
+  PZSTD_THREADS  pzstd 解压线程数，默认为 CPU 核数（nproc）
+
+说明：
+  - 有 pzstd 时用 pzstd -p N 解压
+  - 只有 zstd 时为单线程解码（zstd 解压不支持多线程）
+
+示例：
+  untarzst project.tar.zst
+  untarzst project.tar.zst /tmp/restore
+EOF
+    return 0
+    ;;
+  esac
+
   set -o pipefail
 
   if [[ -z ${1:-} ]]; then
