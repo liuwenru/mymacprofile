@@ -1,0 +1,171 @@
+# 远程工作主机用的 tmux 简化配置，直接复制粘贴到 ~/.tmux.conf 即可。
+# 不依赖插件和额外文件；分段顺序与 tmux.conf 保持一致，便于对比合并。
+
+# -----------------------------------------------------------------------------
+# General 通用设置
+# -----------------------------------------------------------------------------
+set -g cursor-colour red  # 红色光标
+# 把终端获得/失去焦点的事件传给面板内程序（vim/neovim 的 autoread 等依赖它）。
+set -s focus-events on
+# 按下 Esc 后等待 50ms 判断是否为组合键；值太大会让 vim 中退出插入模式变慢。
+set -s escape-time 50
+# 带 -r 的绑定在按下前缀后 300ms 内可连续重复按，无需再次按前缀。
+set -g repeat-time 300
+# 每个面板保留的滚动历史行数（1000 万行，面板输出多时注意内存占用）。
+set -g history-limit 100000
+# display-message 消息的显示时长，0 表示一直显示到下一次按键。
+set -g display-time 0
+# 允许面板内程序通过 passthrough 直接给外层终端发送转义序列（图片协议、OSC 52 等）。
+set -g allow-passthrough on
+# 告诉 tmux：xterm 兼容的外层终端支持 OSC 52 剪贴板。
+set -as terminal-features ',xterm*:clipboard'
+# tmux 3.7 的 OSC 52 应答可能被拆碎并漏进当前面板，显示成乱码，
+# 因此 3.7 关闭剪贴板集成；3.8 及以上使用 tmux 原生剪贴板支持。
+if-shell 'tmux -V | grep -q "^tmux 3\.7"' \
+  'set -s set-clipboard off' \
+  'set -s set-clipboard on'
+
+# 前缀键：Ctrl-j 或 Ctrl-b
+set -g prefix C-j
+set -g prefix2 C-b
+
+# 窗口和面板从 1 开始编号（贴合键盘数字键顺序），关闭窗口后自动重新编号补齐空缺。
+set -g base-index 1
+set -g pane-base-index 1
+set -g renumber-windows on
+
+# 窗口名自动显示为 "当前目录:当前命令"。
+set -g automatic-rename on
+set -g aggressive-resize
+set -g automatic-rename-format '#{b:pane_current_path}:#{b:pane_current_command}'
+# 同步设置外层终端的窗口/标签标题，格式："主机名: 会话:窗口.面板 窗口名"。
+set -g set-titles on
+set -g set-titles-string '#h: #S:#I.#P #W'
+
+# 前缀 + r：重新加载本配置文件（前缀 + Ctrl-u / u 在文件末尾也有绑定）。
+unbind r
+bind r source-file ~/.tmux.conf \; display-message '~/.tmux.conf reloaded'
+
+# -----------------------------------------------------------------------------
+# Windows and panes 窗口与面板
+# -----------------------------------------------------------------------------
+
+# 前缀 + c：新建窗口，使用 shell 默认目录（通常是 $HOME），与旧配置行为一致；
+# 如需继承当前目录，可追加 -c '#{pane_current_path}'。
+bind c new-window
+
+# 前缀 + | 左右分屏，前缀 + - 上下分屏，新面板继承当前面板所在目录；
+# 同时解除默认的 " 和 % 分屏键。
+unbind '"'
+unbind %
+bind | split-window -h -c '#{pane_current_path}'
+bind - split-window -v -c '#{pane_current_path}'
+
+# 前缀 + h/j/k/l：vim 风格切换面板（左/下/上/右），可连续按。
+bind -r h select-pane -L
+bind -r j select-pane -D
+bind -r k select-pane -U
+bind -r l select-pane -R
+
+# 前缀 + H/J/K/L：调整面板大小，每次 5 格，可连续按。
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# 前缀 + > / <：与下一个/上一个面板交换位置；
+# 前缀 + +：最大化/还原当前面板（tmux 原生 zoom，替代 Oh My Tmux 的自定义脚本）。
+bind '>' swap-pane -D
+bind '<' swap-pane -U
+bind + resize-pane -Z
+
+# 会话辅助键（沿用 Oh My Tmux 习惯）：
+# 前缀 + Ctrl-c 新建会话；前缀 + Ctrl-f 输入会话名查找并切换。
+bind C-c new-session
+bind C-f command-prompt -p 'find session:' 'switch-client -t "%%"'
+
+# Ctrl-l（无需前缀）：先让 shell 清屏，等 0.1 秒后再清空 tmux 的滚动历史。
+# 注意与下方 scratch 插件的 "前缀 + Ctrl-l" 是两个不同的键。
+bind -n C-l send-keys C-l \; run-shell 'sleep 0.1' \; clear-history
+
+# -----------------------------------------------------------------------------
+# Mouse and copy mode 鼠标与复制模式
+# -----------------------------------------------------------------------------
+
+# 开启鼠标支持（点击切换面板、拖动调整大小、滚轮翻历史）；复制模式使用 vi 按键。
+set -g mouse on
+setw -g mode-keys vi
+
+# 前缀 + m：临时关闭 tmux 鼠标，交给外层终端（如 SecureCRT）做本地选择复制；
+# 再按一次恢复 tmux 鼠标支持。
+bind m if-shell -F '#{mouse}' {
+  set -g mouse off
+  display-message 'tmux mouse: off (terminal selection mode)'
+} {
+  set -g mouse on
+  display-message 'tmux mouse: on'
+}
+
+# vi 复制模式：v 开始选择，y、Enter 或松开鼠标复制并退出复制模式。
+# 复制内容通过 OSC 52 转发给外层终端，SSH 到远程主机上运行 tmux 时同样有效。
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+bind -T copy-mode-vi Enter send-keys -X copy-selection-and-cancel
+bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
+bind -T copy-mode MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
+
+# 鼠标拖选：复制模式中直接开始 tmux 原生选择；
+# 普通状态下拖动进入复制模式，但如果面板内程序（如 opencode、vim）开启了鼠标上报，
+# 则把拖动事件原样交给该程序处理。
+bind -T copy-mode-vi MouseDrag1Pane select-pane \; send-keys -X begin-selection
+bind -T copy-mode MouseDrag1Pane select-pane \; send-keys -X begin-selection
+bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}' { send-keys -M } { copy-mode -M }
+
+# -----------------------------------------------------------------------------
+# Scratch, status line and colors 弹窗、状态栏与颜色（无插件）
+# -----------------------------------------------------------------------------
+
+# 前缀 + Ctrl-l：打开 scratch 弹窗；
+# 在 scratch 内再次按下，只分离客户端，保留会话。
+bind C-l if-shell -F '#{==:#{session_name},scratch}' {
+  detach-client
+} {
+  display-popup -E -T "scratch" -w 80% -h 80% -d "#{pane_current_path}" "env -u TMUX tmux new-session -A -s scratch -c '#{pane_current_path}'"
+}
+# scratch 弹窗使用终端默认颜色
+set -gw popup-style "bg=default,fg=default"
+set -gw popup-border-style "bg=default,fg=default"
+
+# 状态栏
+set -g status-left-length 20
+set -g status-right " %H:%M:%S %Y-%m-%d"
+setw -g monitor-activity on
+set -g status-interval 1
+set -g status-justify left
+
+# 前缀 + F8：切换颜色模式，并重连当前客户端
+bind F8 {
+  if-shell -F '#{==:#{@color_mode},rgb}' {
+    set -sF 'terminal-features[99]' '#{client_termname}:RGB@:256'
+    set -sF 'terminal-overrides[99]' '#{client_termname}:colors=256:RGB@:Tc@:setrgbf@:setrgbb@'
+    set -g @color_mode '256'
+  } {
+    if-shell -F '#{==:#{@color_mode},256}' {
+      set -sF 'terminal-features[99]' '#{client_termname}:RGB@:256@'
+      set -sF 'terminal-overrides[99]' '#{client_termname}:colors=16:RGB@:Tc@:setrgbf@:setrgbb@'
+      set -g @color_mode 'ansi'
+    } {
+      set -sF 'terminal-features[99]' '#{client_termname}:256:RGB'
+      set -sF 'terminal-overrides[99]' '#{client_termname}:colors=256'
+      set -g @color_mode 'rgb'
+    }
+  }
+  run-shell "tmux detach-client -t #{q:client_name} -E 'exec env -u TMUX /usr/local/bin/tmux -S #{q:socket_path} attach-session -t #{q:session_id}'"
+}
+
+# 重载配置：前缀 + u
+# 前缀 + Ctrl-u 或 前缀 + u：重新加载本配置文件。
+unbind C-u
+bind C-u source-file ~/.tmux.conf \; display-message '~/.tmux.conf reloaded'
+unbind u
+bind u source-file ~/.tmux.conf \; display-message '~/.tmux.conf reloaded'
