@@ -1,6 +1,7 @@
 # Interactive settings shared by Bash and Zsh; environment lives in env.sh.
 export TERM=xterm-256color
 
+export UV_NATIVE_TLS=true
 # Existing aliases are intentionally preserved during the first migration.
 alias dock=docker
 alias dockeraarch64='DOCKER_HOST=ssh://root@192.168.182.150 docker'
