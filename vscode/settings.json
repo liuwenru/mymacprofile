@@ -96,7 +96,7 @@
     "claude-desktop": false,
     "cursor-global": false,
     "cursor-workspace": false,
-    "windsurf": false,
+    "windsurf": false
   },
   "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
   // CMake 配置
