@@ -1,0 +1,34 @@
+{
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Hard": 65535,
+      "Soft": 65535
+    },
+    "nproc": {
+      "Name": "nproc",
+      "Soft": 65535,
+      "Hard": 65535
+    }
+  },
+  "features": {
+    "buildkit": false
+  },
+  "bip": "186.189.0.1/24",
+  "max-concurrent-downloads": 20,
+  "max-download-attempts": 15,
+  "log-driver": "json-file",
+  "log-level": "warn",
+  "log-opts": {
+    "max-size": "500m",
+    "max-file": "5"
+  },
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "insecure-registries": ["registry.epoint.com.cn", "docker.epoint.com.cn"],
+  "data-root": "/var/lib/docker",
+  "proxies": {
+    "http-proxy": "http://192.168.188.8:1080",
+    "https-proxy": "http://192.168.188.8:1080",
+    "no-proxy": "*.epoint.com.cn,127.0.0.0/8,*.myhuaweicloud.com,192.168.0.0/16"
+  }
+}

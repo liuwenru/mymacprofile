@@ -1,0 +1,18 @@
+Windows Registry Editor Version 5.00
+
+; ============================================================
+; 任务栏通知区域图标设置 —— 还原备份
+; 备份时间: 2026-10-14
+;
+; 修改前原始状态:
+;   HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer
+;   EnableAutoTray  : 未设置(即默认行为 = 不常用图标收进 "^" 折叠区)
+; 修改后状态:
+;   EnableAutoTray  : 0  (= 始终在任务栏上显示所有通知区域图标)
+;
+; 使用方法: 双击本文件导入, 会删除 EnableAutoTray 值, 恢复系统默认
+;           (导入后需重启 explorer.exe 或重新登录才会生效)
+; ============================================================
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer]
+"EnableAutoTray"=0

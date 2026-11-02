@@ -1,0 +1,8 @@
+# Login shells only. macOS /etc/zprofile runs path_helper after ~/.zshenv and
+# moves system paths to the front, so re-source env.sh to restore our order.
+source "${${(%):-%x}:A:h:h}/profile/env.sh"
+
+# Added by Toolbox App; the app may append its own line here again if it misses this one.
+if [[ -d "$HOME/Library/Application Support/JetBrains/Toolbox/scripts" ]]; then
+  export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+fi

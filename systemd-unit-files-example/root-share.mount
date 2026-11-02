@@ -1,0 +1,9 @@
+[Unit]
+Description = nfs 147 mount 
+[Mount]
+What = 192.168.188.147:/mnt/share1/epoint/liuwenru
+Where = /root/share
+Type = nfs
+Options=defaults,noacl,nolock,vers=3,hard,intr,rsize=1048576,wsize=1048576
+[Install]
+WantedBy = multi-user.target

@@ -1,0 +1,112 @@
+# 红色光标
+set -g cursor-colour red
+
+# 前缀键：Ctrl-j 或 Ctrl-b
+set-option -g prefix C-j
+set-option -g prefix2 C-b
+
+# 状态栏
+set-option -g status-left-length 20
+set-option -g status-right " %H:%M:%S %Y-%m-%d"
+setw -g monitor-activity on
+set -g status-interval 1
+set -g status-justify left
+
+# 常规设置
+set -g history-limit 100000
+set -g escape-time 50
+set -g repeat-time 300
+set -g display-time 2000
+
+# 窗口与面板从 1 开始编号
+set -g base-index 1
+set -g pane-base-index 1
+set -g renumber-windows on
+
+# 分屏
+bind | split-window -h
+bind - split-window -v
+
+# 调整面板大小
+bind -r H resize-pane -L 2
+bind -r J resize-pane -D 2
+bind -r K resize-pane -U 2
+bind -r L resize-pane -R 2
+
+# 重载配置：前缀 + r 或前缀 + u
+unbind r
+bind r source-file ~/.tmux.conf \; display-message '~/.tmux.conf reloaded'
+unbind u
+bind u source-file ~/.tmux.conf \; display-message '~/.tmux.conf reloaded'
+
+# 窗口大小与名称
+set-window-option -g aggressive-resize
+set-option -g automatic-rename on
+set-option -g automatic-rename-format '#{b:pane_current_command}->#{b:pane_current_path}'
+
+# 鼠标与剪贴板
+set -g mouse on
+set -s set-clipboard external
+set -as terminal-features ',xterm*:clipboard'
+setw -g mode-keys vi
+
+# 普通终端拖选进入 tmux 复制模式；
+# 应用启用鼠标时，仍将鼠标事件交给应用处理。
+bind-key -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}' {
+    send-keys -M
+} {
+    copy-mode -M
+}
+
+# 拖选开始选择；松开鼠标自动复制并退出选择模式
+bind-key -T copy-mode-vi MouseDrag1Pane select-pane \; send-keys -X begin-selection
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
+bind-key -T copy-mode MouseDrag1Pane select-pane \; send-keys -X begin-selection
+bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
+
+# vi 复制模式：v 开始选择，y 或 Enter 复制
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+bind-key -T copy-mode-vi Enter send-keys -X copy-selection-and-cancel
+
+# 前缀 + m：切换 tmux 鼠标支持
+# 关闭后可直接使用 SecureCRT 的本地选择
+bind m if-shell -F '#{mouse}' {
+    set -g mouse off
+    display-message 'tmux mouse: off (terminal selection mode)'
+} {
+    set -g mouse on
+    display-message 'tmux mouse: on'
+}
+
+# 前缀 + Ctrl-l：打开 scratch 弹窗；
+# 在 scratch 内再次按下，只分离客户端，保留会话。
+bind-key C-l if-shell -F '#{==:#{session_name},scratch}' {
+    detach-client
+} {
+    display-popup -E -T "scratch" -w 80% -h 80% -d "#{pane_current_path}" "env -u TMUX tmux new-session -A -s scratch -c '#{pane_current_path}'"
+}
+
+# 前缀 + F8：切换颜色模式，并重连当前客户端
+bind-key F8 {
+    if-shell -F '#{==:#{@color_mode},rgb}' {
+        set-option -sF 'terminal-features[99]' '#{client_termname}:RGB@:256'
+        set-option -sF 'terminal-overrides[99]' '#{client_termname}:colors=256:RGB@:Tc@:setrgbf@:setrgbb@'
+        set-option -g @color_mode '256'
+    } {
+        if-shell -F '#{==:#{@color_mode},256}' {
+            set-option -sF 'terminal-features[99]' '#{client_termname}:RGB@:256@'
+            set-option -sF 'terminal-overrides[99]' '#{client_termname}:colors=16:RGB@:Tc@:setrgbf@:setrgbb@'
+            set-option -g @color_mode 'ansi'
+        } {
+            set-option -sF 'terminal-features[99]' '#{client_termname}:256:RGB'
+            set-option -sF 'terminal-overrides[99]' '#{client_termname}:colors=256'
+            set-option -g @color_mode 'rgb'
+        }
+    }
+    run-shell "tmux detach-client -t #{q:client_name} -E 'exec env -u TMUX /usr/local/bin/tmux -S #{q:socket_path} attach-session -t #{q:session_id}'"
+}
+
+# scratch 弹窗使用终端默认颜色
+set -gw popup-style "bg=default,fg=default"
+set -gw popup-border-style "bg=default,fg=default"

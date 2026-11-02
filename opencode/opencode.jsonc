@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "skill": {
+      "agent-browser": "allow"
+    },
+    "external_directory": {
+      "/tmp/**": "allow"
+    },
+    "read": {
+      "/tmp/**": "allow"
+    },
+    "edit": {
+    },
+    "bash": {
+      "* /tmp/*": "allow",
+      "agent-browser": "allow",
+      "agent-browser *": "allow"
+    }
+  },
+}

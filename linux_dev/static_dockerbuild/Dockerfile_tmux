@@ -1,0 +1,105 @@
+# ----------------------------------------------------------------------------
+# Statically-linked tmux on Alpine musl
+# Multi-arch support: linux/amd64, linux/arm64 (via buildx --platform)
+# Output: alpine + static binary, runs as `docker run --rm tmux-static:tag`
+# ----------------------------------------------------------------------------
+
+# ---------- 参数 ----------
+ARG ALPINE_VERSION=3.21
+ARG TMUX_VERSION=3.7b
+
+# ---------- 构建阶段 ----------
+FROM alpine:${ALPINE_VERSION} AS builder
+
+ARG TMUX_VERSION
+
+# 编译工具链 + 静态库 (libevent-static / ncurses-static 提供 .a)
+RUN apk add --no-cache \
+        build-base \
+        autoconf \
+        automake \
+        pkgconf \
+        bison \
+        ca-certificates \
+        wget \
+        libevent-dev \
+        libevent-static \
+        ncurses-dev \
+        ncurses-static
+
+WORKDIR /tmp/build
+
+# 拉取源码
+RUN set -eux; \
+    TMUX_TARBALL="tmux-${TMUX_VERSION}.tar.gz"; \
+    TMUX_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/${TMUX_TARBALL}"; \
+    wget -q -O tmux.tar.gz "${TMUX_URL}"; \
+    tar -xzf tmux.tar.gz; \
+    rm tmux.tar.gz; \
+    mv "tmux-${TMUX_VERSION}" tmux
+
+# Patch configure: musl 把 forkpty 放在 libc 而非 libutil,
+# AC_SEARCH_LIBS 找不到它 -> 强制定义 HAVE_FORKPTY, 跳过 compat/forkpty-*.c
+# (upstream 漏掉了 compat/forkpty-linux.c, 详见 GH issue)
+# 注意: fdforkpty 是 tmux 自创函数, 必须保留 compat 路径
+RUN sed -i \
+        -e 's|if test "x$found_forkpty" = xyes; then|if true; then|' \
+        -e 's|if test "x$found_forkpty" = xno; then|if false; then|' \
+        tmux/configure
+
+WORKDIR /tmp/build/tmux
+
+# 强制静态链接:
+#   PKG_CONFIG=pkgconf --static  -> pkg-config 选 .a 而非 .so
+#   LDFLAGS=-static              -> 链接器静态化 (musl + libevent + ncurses)
+#   CFLAGS=-DHAVE_FORKPTY        -> 防止 compat.h 重复声明 forkpty
+ENV PKG_CONFIG="pkgconf --static"
+ENV CFLAGS="-Os -fdata-sections -ffunction-sections -DHAVE_FORKPTY"
+ENV LDFLAGS="-static -Wl,--gc-sections -Wl,-s"
+
+RUN ./configure \
+        --prefix=/usr/local \
+        --enable-static \
+        --disable-shared \
+    && make -j"$(nproc)" \
+    && strip tmux
+
+# 验证: 必须是静态二进制
+RUN set -x; \
+    LDD_OUT=$(ldd tmux 2>&1 || true); \
+    echo "${LDD_OUT}"; \
+    if echo "${LDD_OUT}" | grep -q "not a dynamic executable\\|Not a valid dynamic program"; then \
+        echo "OK: 静态二进制"; \
+    elif echo "${LDD_OUT}" | grep -qE '^\s*lib'; then \
+        echo "FAIL: 不是静态"; exit 1; \
+    else \
+        echo "OK: 静态二进制 (ldd: ${LDD_OUT})"; \
+    fi; \
+    ls -lh tmux
+
+# ---------- 运行阶段 ----------
+FROM alpine:${ALPINE_VERSION} AS runtime
+
+LABEL org.opencontainers.image.title="tmux" \
+      org.opencontainers.image.description="Statically-linked tmux on Alpine musl" \
+      org.opencontainers.image.source="https://github.com/tmux/tmux" \
+      org.opencontainers.image.licenses="ISC"
+
+COPY --from=builder /tmp/build/tmux/tmux /usr/local/bin/tmux
+
+# 校验: 必须为静态二进制 + 可执行
+RUN set -x; \
+    LDD_OUT=$(ldd /usr/local/bin/tmux 2>&1 || true); \
+    echo "${LDD_OUT}"; \
+    if echo "${LDD_OUT}" | grep -q "not a dynamic executable\\|Not a valid dynamic program"; then \
+        echo "OK: 静态二进制"; \
+    elif echo "${LDD_OUT}" | grep -qE '^\s*lib'; then \
+        echo "FAIL: 不是静态"; exit 1; \
+    else \
+        echo "OK: 静态二进制 (ldd: ${LDD_OUT})"; \
+    fi; \
+    tmux -V
+
+WORKDIR /work
+ENTRYPOINT ["/usr/local/bin/tmux"]
+CMD ["new-session", "-A", "-s", "main"]
