@@ -42,8 +42,12 @@ set -g automatic-rename-format '#{=6:#{b:pane_current_path}}#{?#{==:#{b:pane_cur
 set -g set-titles on
 set -g set-titles-string '#h: #S:#I.#P #W'
 
-# 自动配置 session 那么危
-set-hook -g session-created 'rename-session "#{host_short}-#{t/f/%m%d-%H%M%S:session_created}"'
+# 自动配置 session 名称；跳过 *@scratch，否则它被改名后 new-session -A 找不到，每次都新建一个
+set-hook -g session-created {
+  if-shell -F '#{?#{m:*@scratch,#{session_name}},,1}' {
+    rename-session "#{host_short}-#{t/f/%m%d-%H%M%S:session_created}"
+  }
+}
 # 如果过长则只显示 40 个字符长度
 set -g status-left '[#{=/40/…:session_name}]=> ' 
 
@@ -130,12 +134,25 @@ bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}
 # Scratch, status line and colors 弹窗、状态栏与颜色（无插件）
 # -----------------------------------------------------------------------------
 
-# 前缀 + Ctrl-l：打开 scratch 弹窗；
+# 前缀 + Ctrl-l：打开当前窗口专属的 scratch 弹窗，会话名形如 host-1102-220938-@3@scratch；
+# 用 window_id 而不是窗口编号，renumber-windows 重排后仍对应同一个窗口。
+# display-popup 不展开命令里的 #{}，原样交给内层 tmux 后会在新客户端上下文里展开成空，
+# 所有窗口都变成同一个 -@scratch；因此用 run-shell -C 先在当前窗口上下文展开再执行。
+# 注意 run-shell -C 只展开字符串参数，写成 { } 块不会展开。
+# 工作目录由 popup 的 -d 决定，new-session 不带 -c 时沿用客户端所在目录。
 # 在 scratch 内再次按下，只分离客户端，保留会话。
-bind C-l if-shell -F '#{==:#{session_name},scratch}' {
+bind C-l if-shell -F '#{m:*@scratch,#{session_name}}' {
   detach-client
 } {
-  display-popup -E -T "scratch" -w 80% -h 80% -d "#{pane_current_path}" "env -u TMUX tmux new-session -A -s scratch -c '#{pane_current_path}'"
+  run-shell -C 'display-popup -E -T scratch -w 80% -h 80% -d "#{pane_current_path}" "env -u TMUX tmux new-session -A -s #{session_name}-#{window_id}@scratch"'
+}
+# 窗口关闭（含整个会话关闭）时一并清理它的 scratch 会话；
+# hook_window 是被关闭窗口的 window_id。父会话名必须用 hook_session_name，
+# 此时窗口已解绑，session_name 会解析成其他会话。
+# 用 run-shell 一步完成：if-shell 分支里的 tmux 命令拿不到 hook 上下文，kill 不掉。
+# 没有对应 scratch（或在 scratch 内 exit）时 kill 失败，|| true 避免报错提示。
+set-hook -g window-unlinked {
+  run-shell 'tmux kill-session -t "=#{hook_session_name}-#{hook_window}@scratch" 2>/dev/null || true'
 }
 # scratch 弹窗使用终端默认颜色
 set -gw popup-style "bg=default,fg=default"
