@@ -22,7 +22,7 @@ zstyle :omz:plugins:ssh-agent identities ~/.ssh/id_rsa ~/.ssh/id_rsa_work
 zstyle ':omz:plugins:nvm' lazy yes
 zstyle ':omz:plugins:nvm' lazy-cmd codex dsh dsh-tui dst firecrawl pn pnx
 plugins=(ssh-agent nvm)
-[[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-autosuggestions ]] && plugins=(zsh-autosuggestions $plugins)
+[[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-autosuggestions || -d $ZSH/plugins/zsh-autosuggestions ]] && plugins=(zsh-autosuggestions $plugins)
 source "$ZSH/oh-my-zsh.sh"
 
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
