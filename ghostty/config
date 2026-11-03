@@ -1,6 +1,6 @@
 bell-features = no-attention,no-title,no-system,no-audio
 window-save-state = always
-font-family = "Maple Mono NF CN"
+font-family = "Maple Mono Normal NL NF CN"
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
