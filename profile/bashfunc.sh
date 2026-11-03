@@ -245,16 +245,18 @@ tarzst() (
   case "${1:-}" in
   -h | --help)
     cat <<'EOF'
-用法：tarzst [源目录] [输出文件]
+用法：tarzst [源目录或文件] [输出文件]
       tarzst -h | --help
 
-将目录打包为 tar 并用 zstd 压缩（优先使用 pzstd 多线程）。
+将目录打包为 tar 并用 zstd 压缩（优先使用 pzstd 多线程）；
+源为普通文件时不打 tar，直接 zstd 压缩该文件。
 
 参数：
-  源目录      要打包的目录，默认为当前目录 (.)
-  输出文件    输出路径，默认为 "<源目录名>.tar.zst"（放在当前目录）
-              源目录为 / 时默认名为 root.tar.zst
-              所在目录不存在会自动创建，文件已存在则报错退出
+  源目录或文件  要打包的目录或要压缩的文件，默认为当前目录 (.)
+  输出文件      输出路径，默认放在当前目录：
+                目录为 "<源目录名>.tar.zst"，文件为 "<文件名>.zst"
+                源目录为 / 时默认名为 root.tar.zst
+                所在目录不存在会自动创建，文件已存在则报错退出
 
 选项：
   -h, --help  显示本帮助并退出
@@ -267,12 +269,14 @@ tarzst() (
   - 优先使用 pzstd -p N；没有则退回 zstd -TN
   - 输出文件位于源目录内时，会自动排除压缩包自身
   - 归档内路径以 ./ 开头（相对源目录）
+  - 单文件压缩结果可用 untarzst 或 zstd -d 解压
   - 压缩失败时会删除不完整的输出文件
 
 示例：
   tarzst                          # 打包当前目录
   tarzst ~/project                # 生成 ./project.tar.zst
   tarzst ~/project /tmp/p.tar.zst
+  tarzst app.log                  # 生成 ./app.log.zst
   PZSTD_THREADS=4 tarzst data
 EOF
     return 0
@@ -314,11 +318,34 @@ EOF
     return 1
   fi
 
-  src=$(cd -- "${1:-.}" && pwd -P) || return 1
-  name=$(basename -- "$src")
-  [[ "$src" == / ]] && name=root
+  local input="${1:-.}"
+  local mode=dir
 
-  out=${2:-"$name.tar.zst"}
+  if [[ -f "$input" ]]; then
+    # 普通文件（含指向文件的软链接）：不走 tar，直接 zstd 压缩
+    mode=file
+    src=$(cd -- "$(dirname -- "$input")" && pwd -P) || return 1
+    src="${src%/}/$(basename -- "$input")"
+    name=$(basename -- "$src")
+  elif [[ -d "$input" ]]; then
+    src=$(cd -- "$input" && pwd -P) || return 1
+    name=$(basename -- "$src")
+    [[ "$src" == / ]] && name=root
+  else
+    echo "错误：源路径不存在或不是普通文件/目录：$input" >&2
+    return 1
+  fi
+
+  if [[ ! -r "$src" ]]; then
+    echo "错误：源路径不可读：$src" >&2
+    return 1
+  fi
+
+  if [[ "$mode" == file ]]; then
+    out=${2:-"$name.zst"}
+  else
+    out=${2:-"$name.tar.zst"}
+  fi
   mkdir -p -- "$(dirname -- "$out")" || return 1
   outdir=$(cd -- "$(dirname -- "$out")" && pwd -P) || return 1
   out="${outdir%/}/$(basename -- "$out")"
@@ -338,6 +365,18 @@ EOF
 
   echo "使用 $tool 压缩，线程数：${threads}，输出：$out" >&2
 
+  if [[ "$mode" == file ]]; then
+    # 从 stdin 读入，避免不同版本 pzstd/zstd 对文件名参数解析的差异
+    if "${compressor[@]}" -3 -o "$out" <"$src"; then
+      echo "完成：$out" >&2
+    else
+      echo "错误：压缩失败，已删除不完整的输出文件" >&2
+      rm -f -- "$out"
+      return 1
+    fi
+    return 0
+  fi
+
   if tar -C "$src" "${excludes[@]}" -cf - . |
     "${compressor[@]}" -3 -o "$out"; then
     echo "完成：$out" >&2
@@ -355,10 +394,11 @@ untarzst() (
 用法：untarzst 压缩包 [目标目录]
       untarzst -h | --help
 
-解压 .tar.zst 压缩包（优先使用 pzstd 多线程）。
+解压 .tar.zst 压缩包（优先使用 pzstd 多线程）；
+也支持 tarzst 对单个文件生成的 .zst，解压出该文件。
 
 参数：
-  压缩包      要解压的 .tar.zst 文件（必填）
+  压缩包      要解压的 .tar.zst 或单文件 .zst（必填）
   目标目录    解压到的目录，默认为当前目录 (.)，不存在会自动创建
 
 选项：
@@ -370,10 +410,14 @@ untarzst() (
 说明：
   - 有 pzstd 时用 pzstd -p N 解压
   - 只有 zstd 时为单线程解码（zstd 解压不支持多线程）
+  - 按解压后内容判断是否为 tar，与扩展名无关
+  - 单文件解压为 "<目标目录>/<去掉 .zst 的文件名>"，无 .zst 后缀时追加 .out
+    输出文件已存在则报错退出，解压失败时删除不完整的输出文件
 
 示例：
   untarzst project.tar.zst
   untarzst project.tar.zst /tmp/restore
+  untarzst app.log.zst            # 生成 ./app.log
 EOF
     return 0
     ;;
@@ -433,6 +477,41 @@ EOF
     echo "使用 pzstd 解压，线程数：${threads}，目标：$dest" >&2
   else
     echo "使用 zstd 解压，单线程解码，目标：$dest" >&2
+  fi
+
+  # 按内容判断是否为 tar：tar 头偏移 257 处为 "ustar"（POSIX 与 GNU 格式均有）
+  # 只解压开头几百字节，用 dd 跳过可能含 NUL 的前部，避免命令替换丢弃 NUL
+  local magic name out
+  magic=$(
+    "${decompressor[@]}" -d -c <"$1" 2>/dev/null |
+      dd bs=1 skip=257 count=5 2>/dev/null
+  )
+
+  if [[ "$magic" != ustar ]]; then
+    # 单文件 .zst：解压为 "<目标目录>/<去掉 .zst 后缀的文件名>"
+    name=$(basename -- "$1")
+    case "$name" in
+    *.zst) name=${name%.zst} ;;
+    *) name="$name.out" ;;
+    esac
+    out="${dest%/}/$name"
+
+    # 提前拒绝已存在的文件，避免下面失败清理时误删旧文件
+    if [[ -e "$out" ]]; then
+      echo "错误：输出文件已存在：$out" >&2
+      return 1
+    fi
+
+    echo "检测到非 tar 内容，按单文件解压：$out" >&2
+
+    if "${decompressor[@]}" -d -o "$out" <"$1"; then
+      echo "完成：$out" >&2
+    else
+      echo "错误：解压失败，已删除不完整的输出文件" >&2
+      rm -f -- "$out"
+      return 1
+    fi
+    return 0
   fi
 
   if "${decompressor[@]}" -d -c -- "$1" |
