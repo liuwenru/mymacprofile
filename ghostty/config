@@ -1,0 +1,17 @@
+bell-features = no-attention,no-title,no-system,no-audio
+window-save-state = always
+font-family = "Maple Mono NF CN"
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
+auto-update = off
+
+theme = GitHub Dark Colorblind
+
+
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+
+
+confirm-close-surface = false

@@ -25,6 +25,7 @@
 | `neovim/` | 基于 LazyVim 的 Neovim 配置 |
 | `tmux/` | 基于旧版 Oh My Tmux 快照的稳定配置 |
 | `vscode/` | VS Code 设置、快捷键和配置导出脚本 |
+| `ghostty/` | Ghostty 终端配置，链接为 `~/.config/ghostty/config` |
 | `terminal/` | macOS Terminal 主题及 Zsh 工具参考资料 |
 | `docker/` | Docker daemon 配置示例 |
 | `completions/` | Docker、kubectl 等 Zsh 补全脚本 |
@@ -39,7 +40,7 @@
 顶层 `install.sh` 是主要安装入口，支持以下目标：
 
 ```text
-profile git maven gradle neovim tmux vscode opencode all
+profile git maven gradle neovim tmux vscode ghostty opencode all
 ```
 
 安装前应优先使用 dry-run：
