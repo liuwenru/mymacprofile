@@ -1,10 +1,20 @@
 # 远程工作主机用的 tmux 简化配置，直接复制粘贴到 ~/.tmux.conf 即可。
 # 不依赖插件和额外文件；分段顺序与 tmux.conf 保持一致，便于对比合并。
+#
+# 版本兼容：远程主机上 tmux 2.8、3.1、3.8 都有，需要新版本的配置用 %if 包起来，低版本直接跳过。
+# - 判断用 #{version}（正在运行的 server 版本），不用 tmux -V（PATH 里的 tmux 可能是另一个版本）。
+# - 用 m: 通配匹配，因为 2.8 还没有 >= 等比较运算；模式只覆盖 3.x，出现 4.x 时需要调整。
+# - %if 后面的条件不能加引号：2.8 不会去掉引号，"0" 也会被当成真。
+# - 2.8 不认识 {} 块，块内每行会被当成顶层命令执行，所以含 {} 的配置必须放进 %if；
+#   条件为假时 2.8 在解析前就整行跳过，不会碰到 {}。
+# 用到的模式：3.0+ 3.*、3.2+ 3.[2-9]*、3.3+ 3.[3-9]*、3.6+ 3.[6-9]*、3.7+ 3.[7-9]*
 
 # -----------------------------------------------------------------------------
 # General 通用设置
 # -----------------------------------------------------------------------------
-set -g cursor-colour red  # 红色光标
+%if #{m:3.[3-9]*,#{version}}
+set -g cursor-colour red  # 红色光标（3.3+）
+%endif
 # 把终端获得/失去焦点的事件传给面板内程序（vim/neovim 的 autoread 等依赖它）。
 set -s focus-events on
 # 按下 Esc 后等待 50ms 判断是否为组合键；值太大会让 vim 中退出插入模式变慢。
@@ -15,15 +25,20 @@ set -g repeat-time 300
 set -g history-limit 100000
 # display-message 消息的显示时长，0 表示一直显示到下一次按键。
 set -g display-time 0
-# 允许面板内程序通过 passthrough 直接给外层终端发送转义序列（图片协议、OSC 52 等）。
+# 允许面板内程序通过 passthrough 直接给外层终端发送转义序列（图片协议、OSC 52 等，3.3+）。
+%if #{m:3.[3-9]*,#{version}}
 set -g allow-passthrough on
-# 告诉 tmux：xterm 兼容的外层终端支持 OSC 52 剪贴板。
+%endif
+# 告诉 tmux：xterm 兼容的外层终端支持 OSC 52 剪贴板（terminal-features 3.2+）。
+%if #{m:3.[2-9]*,#{version}}
 set -as terminal-features ',xterm*:clipboard'
-# tmux 3.7 和 3.8 开启 OSC 52 应答
-# 因此 3.7 关闭剪贴板集成；3.8 及以上使用 tmux 原生剪贴板支持。
-if-shell 'tmux -V | grep -Eq "^tmux 3[.](7|8)[a-z]*$"' \
-  'set -s set-clipboard on' \
-  'set -s set-clipboard off'
+%endif
+# 3.7 及以上使用 tmux 原生 OSC 52 剪贴板支持，更低版本关闭剪贴板集成。
+%if #{m:3.[7-9]*,#{version}}
+set -s set-clipboard on
+%else
+set -s set-clipboard off
+%endif
 
 # 前缀键：Ctrl-j 或 Ctrl-b
 set -g prefix C-j
@@ -43,13 +58,18 @@ set -g set-titles on
 set -g set-titles-string '#h: #S:#I.#P #W'
 
 # 自动配置 session 名称；跳过 *@scratch，否则它被改名后 new-session -A 找不到，每次都新建一个
+# （t/f 自定义时间格式 3.2+）
+%if #{m:3.[2-9]*,#{version}}
 set-hook -g session-created {
   if-shell -F '#{?#{m:*@scratch,#{session_name}},,1}' {
     rename-session "#{host_short}-#{t/f/%m%d-%H%M%S:session_created}"
   }
 }
-# 如果过长则只显示 40 个字符长度
-set -g status-left '[#{=/40/…:session_name}]=> ' 
+%endif
+# 如果过长则只显示 40 个字符长度（带省略号的截断 3.0+）
+%if #{m:3.*,#{version}}
+set -g status-left '[#{=/40/…:session_name}]=> '
+%endif
 
 # 前缀 + r：重新加载本配置文件（前缀 + Ctrl-u / u 在文件末尾也有绑定）。
 unbind r
@@ -106,7 +126,8 @@ set -g mouse on
 setw -g mode-keys vi
 
 # 前缀 + m：临时关闭 tmux 鼠标，交给外层终端（如 SecureCRT）做本地选择复制；
-# 再按一次恢复 tmux 鼠标支持。
+# 再按一次恢复 tmux 鼠标支持。（{} 块 3.0+）
+%if #{m:3.*,#{version}}
 bind m if-shell -F '#{mouse}' {
   set -g mouse off
   display-message 'tmux mouse: off (terminal selection mode)'
@@ -114,6 +135,7 @@ bind m if-shell -F '#{mouse}' {
   set -g mouse on
   display-message 'tmux mouse: on'
 }
+%endif
 
 # vi 复制模式：v 开始选择，y、Enter 或松开鼠标复制并退出复制模式。
 # 复制内容通过 OSC 52 转发给外层终端，SSH 到远程主机上运行 tmux 时同样有效。
@@ -125,10 +147,12 @@ bind -T copy-mode MouseDragEnd1Pane send-keys -X copy-selection-and-cancel
 
 # 鼠标拖选：复制模式中直接开始 tmux 原生选择；
 # 普通状态下拖动进入复制模式，但如果面板内程序（如 opencode、vim）开启了鼠标上报，
-# 则把拖动事件原样交给该程序处理。
+# 则把拖动事件原样交给该程序处理。（root 这条用了 {} 块，3.0+）
 bind -T copy-mode-vi MouseDrag1Pane select-pane \; send-keys -X begin-selection
 bind -T copy-mode MouseDrag1Pane select-pane \; send-keys -X begin-selection
+%if #{m:3.*,#{version}}
 bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}' { send-keys -M } { copy-mode -M }
+%endif
 
 # -----------------------------------------------------------------------------
 # Scratch, status line and colors 弹窗、状态栏与颜色（无插件）
@@ -141,6 +165,8 @@ bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}
 # 注意 run-shell -C 只展开字符串参数，写成 { } 块不会展开。
 # 工作目录由 popup 的 -d 决定，new-session 不带 -c 时沿用客户端所在目录。
 # 在 scratch 内再次按下，只分离客户端，保留会话。
+# 整个 scratch 段需要 3.3+（display-popup -T、popup-style；run-shell -C 3.2+）。
+%if #{m:3.[3-9]*,#{version}}
 bind C-l if-shell -F '#{m:*@scratch,#{session_name}}' {
   detach-client
 } {
@@ -157,6 +183,7 @@ set-hook -g window-unlinked {
 # scratch 弹窗使用终端默认颜色
 set -gw popup-style "bg=default,fg=default"
 set -gw popup-border-style "bg=default,fg=default"
+%endif
 
 # 状态栏
 
@@ -167,7 +194,10 @@ setw -g window-status-current-style 'bg=#505050,fg=#FFFFFF,bold'
 setw -g window-status-separator '│'
 
 # 显式保留当前窗口的 list=focus，窗口列表超宽时跟随当前窗口滚动。
+# loop_last_flag 需要 3.6+，更低版本使用默认 status-format。
+%if #{m:3.[6-9]*,#{version}}
 set -g status-format[0] '#[align=left range=left]#{E:status-left}#[norange list=on]#[list=left-marker]<#[list=right-marker]>#[list=on]#{W:#[range=window|#{window_index} bg=#303030 fg=#D8DEE9 nobold list=on]#I:#W#F#{?loop_last_flag,, │ },#[range=window|#{window_index} bg=#505050 fg=#FFFFFF bold list=focus]#I:#W#F#[bg=#303030 fg=#D8DEE9 nobold]#{?loop_last_flag,, │ }}#[norange nolist align=right bg=#303030 fg=#D8DEE9 nobold]#{E:status-right}'
+%endif
 
 set -g status-left-length 45
 set -g status-right " %H:%M:%S %Y-%m-%d"
@@ -175,7 +205,10 @@ setw -g monitor-activity on
 set -g status-interval 1
 set -g status-justify left
 
-# 前缀 + F8：切换颜色模式，并重连当前客户端
+# 前缀 + F8：切换颜色模式，并重连当前客户端（terminal-features 3.2+）。
+# 重连优先用 /usr/local/bin/tmux（自装的静态版），不存在时退回 PATH 里的 tmux；
+# 不用 $ 变量，因为本文件会经 Alfred 的未加引号 heredoc 粘贴，$ 会被 shell 展开。
+%if #{m:3.[2-9]*,#{version}}
 bind F8 {
   if-shell -F '#{==:#{@color_mode},rgb}' {
     set -sF 'terminal-features[99]' '#{client_termname}:RGB@:256'
@@ -192,8 +225,9 @@ bind F8 {
       set -g @color_mode 'rgb'
     }
   }
-  run-shell "tmux detach-client -t #{q:client_name} -E 'exec env -u TMUX /usr/local/bin/tmux -S #{q:socket_path} attach-session -t #{q:session_id}'"
+  run-shell "if [ -x /usr/local/bin/tmux ]; then exec /usr/local/bin/tmux detach-client -t #{q:client_name} -E 'exec env -u TMUX /usr/local/bin/tmux -S #{q:socket_path} attach-session -t #{q:session_id}'; else exec tmux detach-client -t #{q:client_name} -E 'exec env -u TMUX tmux -S #{q:socket_path} attach-session -t #{q:session_id}'; fi"
 }
+%endif
 
 # 重载配置：前缀 + u
 # 前缀 + Ctrl-u 或 前缀 + u：重新加载本配置文件。
