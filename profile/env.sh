@@ -103,3 +103,6 @@ if [[ -n ${ZSH_VERSION:-} ]]; then
   path=($path)
   manpath=($manpath)
 fi
+
+# 本机独立源配置；其他主机未创建此文件时不受影响。
+[[ -r $HOME/.config/internal-mirrors/env.sh ]] && source "$HOME/.config/internal-mirrors/env.sh"
