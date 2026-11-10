@@ -15,6 +15,8 @@ alias mvn='mvn -DskipTests -Dmaven.test.skip=true'
 alias rg='rg -S -U -a --binary'
 alias sshlinuxamd64dev='ssh root@192.168.188.150'
 alias moshlinuxamd64dev='mosh root@192.168.188.150'
+# tssh 的 UDP 主进程和 OpenSSH 主进程不能共用 socket，tssh 固定用 tssh- 前缀，避免和 Codex/VSCode 等 ssh 抢 cm-%C
+alias tssh='tssh -S ~/.ssh/tssh-%C'
 alias tsshlinuxamd64dev='tssh --client --kcp root@192.168.188.150'
 alias sshlinuxaarch64dev='ssh root@192.168.182.150'
 alias moshlinuxaarch64dev='mosh root@192.168.182.150'
