@@ -67,7 +67,9 @@ source "${XDG_CONFIG_HOME:-$HOME/.config}/mymacprofile/profile/profile.sh"
        -> profile/platform/linux.sh、macos.sh 或 windows.sh
        -> profile/bashfunc.sh
        -> ~/.config/mymacprofile/local.sh
-  -> oh-my-zsh 及可选工具（存在才加载）
+  -> oh-my-zsh
+  -> profile/afterohmyzsh_linux.sh 或 afterohmyzsh_mac.sh（须在 oh-my-zsh 之后执行的设置）
+  -> 其他可选工具（存在才加载）
 ```
 
 `local.sh` 用于凭据、机器路径和不应提交的个人设置。可参考 `profile/local.example.sh`：

@@ -25,6 +25,13 @@ plugins=(ssh-agent nvm)
 [[ -d ${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-autosuggestions || -d $ZSH/plugins/zsh-autosuggestions ]] && plugins=(zsh-autosuggestions $plugins)
 source "$ZSH/oh-my-zsh.sh"
 
+# Platform settings that must follow oh-my-zsh (its compinit decides which
+# completion functions are registered).
+case $OSTYPE in
+  linux*) source "$_mymacprofile_root/profile/afterohmyzsh_linux.sh" ;;
+  darwin*) source "$_mymacprofile_root/profile/afterohmyzsh_mac.sh" ;;
+esac
+
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 [[ -s $HOME/.gvm/scripts/gvm ]] && source "$HOME/.gvm/scripts/gvm"
 [[ -s $HOME/.autoenv/activate.sh ]] && source "$HOME/.autoenv/activate.sh"
