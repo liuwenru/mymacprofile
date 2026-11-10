@@ -74,7 +74,3 @@ source "$_mymacprofile_root/profile/bashfunc.sh"
 path=($path)
 unset _mymacprofile_root
 
-# 使用内网软件源 (mirrors.epoint.com.cn)
-export UV_INSECURE_HOST=mirrors.epoint.com.cn:9443
-export UV_HTTP_TIMEOUT=300
-export NVM_NODEJS_ORG_MIRROR=https://mirrors.epoint.com.cn:9443/repository/nodejs-org
