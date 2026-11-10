@@ -56,9 +56,8 @@
     "editor.defaultFormatter": "lumirelle.shell-format-rev"
   },
   "[python]": {
-    "editor.defaultFormatter": "ms-python.autopep8",
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
   },
   "[shellscript]": {
     "editor.defaultFormatter": "lumirelle.shell-format-rev",
@@ -129,7 +128,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "editor.rename.enablePreview": false,
-  "editor.rulers": [200],
+  "editor.rulers": [120],
   "editor.semanticHighlighting.enabled": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,

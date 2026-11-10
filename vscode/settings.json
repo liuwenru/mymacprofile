@@ -55,9 +55,8 @@
     "editor.defaultFormatter": "lumirelle.shell-format-rev",
   },
   "[python]": {
-    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
-    "editor.formatOnType": true,
   },
   "[shellscript]": {
     "editor.defaultFormatter": "lumirelle.shell-format-rev",
@@ -130,7 +129,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "editor.rename.enablePreview": false,
-  "editor.rulers": [200],
+  "editor.rulers": [120],
   "editor.semanticHighlighting.enabled": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
@@ -388,16 +387,19 @@
   // 代码格式化插件 prettier 的配置
   "prettier.enableDebugLogs": true,
   "prettier.endOfLine": "lf",
+  // 仅在找不到 .editorconfig/.prettierrc 时生效（如 /tmp、远端未链接配置的目录）
+  "prettier.printWidth": 120,
   "prettier.tabWidth": 2,
   "prettier.useTabs": false,
   "python.analysis.typeCheckingMode": "standard",
-  // autopep8 扩展自带的 typing_extensions 不兼容 Python 3.15，固定用 3.13 跑格式化服务
-  "autopep8.interpreter": ["python3.13"],
   // python 配置
   "python.languageServer": "Pylance",
   "python.terminal.useEnvFile": true,
   "redhat.telemetry.enabled": false,
+  // shfmt 读取 .editorconfig 中的缩进和 switch_case_indent
+  "shellformat.useEditorConfig": true,
   "remote.defaultExtensionsIfInstalledLocally": [
+    "charliermarsh.ruff",
     "GitHub.copilot",
     "GitHub.copilot-chat",
     "GitHub.vscode-pull-request-github",
@@ -433,7 +435,7 @@
       "username": "root",
     },
   ],
-  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.defaultProfile.windows": "powershell.exe",
   "terminal.integrated.enableMultiLinePasteWarning": false,

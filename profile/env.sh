@@ -9,7 +9,7 @@ export TZ="Asia/Shanghai"
 export LESS="-RXF"
 export DOCKER_BUILDKIT=1
 export BUILDX_EXPERIMENTAL=1
-export no_proxy="*.epoint.com.cn,*.aliyun.*,192.168.0.0/16,172.0.0.0/8,127.0.0.1"
+export no_proxy="*.epoint.com.cn,*.aliyun.*,192.168.0.0/16,172.0.0.0/8,127.0.0.1,localhost"
 
 export JAVA_TOOL_OPTIONS="-Duser.language=en"
 export MAVEN_ARGS="-T 4C"
@@ -19,33 +19,33 @@ export CXXFLAGS="-g -O0"
 
 # $OSTYPE avoids forking uname on every shell start.
 case $OSTYPE in
-  darwin*)
-    export MANPAGER=cat
-    export devtools_home="$HOME/workspace/devtools"
-    export MANPATH="/usr/local/man:${devtools_home}/dash_docs/linux_manpages:${MANPATH:-}"
-    # Static equivalent of `brew shellenv`, without running brew each time.
-    if [[ -d /opt/homebrew ]]; then
-      export HOMEBREW_PREFIX=/opt/homebrew
-      export HOMEBREW_CELLAR=/opt/homebrew/Cellar
-      export HOMEBREW_REPOSITORY=/opt/homebrew
-      export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
-    fi
-    ;;
-  linux*)
-    export LANGUAGE="en_US:en"
-    export PAGER=""
-    export EDITOR=vim
-    export VISUAL=vim
-    export MANPATH="/usr/local/man:${MANPATH:-}"
-    export devtools_home="$HOME/tools/linuxtools"
-    export JAVA_7_HOME="$HOME/tools/jdks/1.7.80-oraclejdk"
-    export JAVA_8_HOME="$HOME/tools/jdks/1.8.362-openjdk"
-    export JAVA_9_HOME="$HOME/tools/jdks/9.0.4-oraclejdk"
-    export JAVA_11_HOME="$HOME/.jabba/jdk/11.0.21-openjdk"
-    export JAVA_17_HOME="$HOME/.jabba/jdk/17.0.5-openjdk"
-    export PLAYWRIGHT_MCP_CDP_ENDPOINT="http://192.168.188.8:9222"
-    export PLAYWRIGHT_CLI_SESSION="kernel"
-    ;;
+darwin*)
+  export MANPAGER=cat
+  export devtools_home="$HOME/workspace/devtools"
+  export MANPATH="/usr/local/man:${devtools_home}/dash_docs/linux_manpages:${MANPATH:-}"
+  # Static equivalent of `brew shellenv`, without running brew each time.
+  if [[ -d /opt/homebrew ]]; then
+    export HOMEBREW_PREFIX=/opt/homebrew
+    export HOMEBREW_CELLAR=/opt/homebrew/Cellar
+    export HOMEBREW_REPOSITORY=/opt/homebrew
+    export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
+  fi
+  ;;
+linux*)
+  export LANGUAGE="en_US:en"
+  export PAGER=""
+  export EDITOR=vim
+  export VISUAL=vim
+  export MANPATH="/usr/local/man:${MANPATH:-}"
+  export devtools_home="$HOME/tools/linuxtools"
+  export JAVA_7_HOME="$HOME/tools/jdks/1.7.80-oraclejdk"
+  export JAVA_8_HOME="$HOME/tools/jdks/1.8.362-openjdk"
+  export JAVA_9_HOME="$HOME/tools/jdks/9.0.4-oraclejdk"
+  export JAVA_11_HOME="$HOME/.jabba/jdk/11.0.21-openjdk"
+  export JAVA_17_HOME="$HOME/.jabba/jdk/17.0.5-openjdk"
+  export PLAYWRIGHT_MCP_CDP_ENDPOINT="http://192.168.188.8:9222"
+  export PLAYWRIGHT_CLI_SESSION="kernel"
+  ;;
 esac
 
 if [[ -n ${devtools_home:-} ]]; then
@@ -68,7 +68,7 @@ fi
 # v24.21.0 is resolved; aliases like "lts/*" are skipped and need nvm itself.
 export NVM_DIR="$HOME/.nvm"
 _nvm_default=""
-[[ -r $NVM_DIR/alias/default ]] && read -r _nvm_default < "$NVM_DIR/alias/default"
+[[ -r $NVM_DIR/alias/default ]] && read -r _nvm_default <"$NVM_DIR/alias/default"
 
 # Each existing directory is moved to the front of PATH, so later entries win.
 # Moving instead of skipping duplicates lets ~/.zprofile re-source this file to
@@ -82,8 +82,7 @@ for _dir in \
   "/usr/local/gdb/bin" "/usr/local/qemu/bin" \
   "${PNPM_HOME:-}" "$HOME/.cargo/bin" "$HOME/.jabba/bin" "${JAVA_HOME:+$JAVA_HOME/bin}" \
   "${_nvm_default:+$NVM_DIR/versions/node/v${_nvm_default#v}/bin}" \
-  "/usr/local/nvim/bin" "$HOME/.opencode/bin"
-do
+  "/usr/local/nvim/bin" "$HOME/.opencode/bin"; do
   [[ -n $_dir && -d $_dir ]] || continue
   _path=":$PATH:"
   _path=${_path//":$_dir:"/:}

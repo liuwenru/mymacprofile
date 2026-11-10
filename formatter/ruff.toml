@@ -1,0 +1,8 @@
+# ruff 全局用户配置，install.sh formatter 会链接到 ~/.config/ruff/ruff.toml。
+# 项目里有自己的 ruff.toml/pyproject.toml 时以项目配置为准。
+line-length = 120
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

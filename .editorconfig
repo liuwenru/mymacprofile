@@ -1,4 +1,6 @@
 # EditorConfig is awesome: https://EditorConfig.org
+# 同时作为全局格式规则，install.sh formatter 会链接到 ~/.editorconfig。
+# VSCode（prettier、shell-format 扩展）和 shfmt 读取这里；ruff 不读，行宽在 formatter/ruff.toml 中保持一致。
 
 # top-most EditorConfig file
 root = true
@@ -8,5 +10,21 @@ indent_style = space
 indent_size = 2
 end_of_line = lf
 charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+# prettier 读取为 printWidth
+max_line_length = 120
+
+[*.md]
+# 行尾两个空格在 Markdown 中表示换行，不能裁剪
 trim_trailing_whitespace = false
-insert_final_newline = false
+
+[*.py]
+indent_size = 4
+
+[{Makefile,*.mk,*.go}]
+indent_style = tab
+
+[*.{sh,bash}]
+# shfmt：case 分支缩进，与仓库现有脚本风格一致
+switch_case_indent = true

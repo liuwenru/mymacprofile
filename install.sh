@@ -11,7 +11,7 @@ usage() {
 Usage: ./install.sh [--dry-run] TARGET...
 
 Targets:
-  profile  zsh  git  maven  gradle  neovim  tmux  vscode  ghostty  opencode  all
+  profile  zsh  git  maven  gradle  neovim  tmux  vscode  ghostty  opencode  formatter  all
 
 Examples:
   ./install.sh --dry-run all
@@ -110,6 +110,10 @@ install_target() {
     ghostty)
       link_config "$script_dir/ghostty/config" "${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config"
       ;;
+    formatter)
+      link_config "$script_dir/.editorconfig" "$HOME/.editorconfig"
+      link_config "$script_dir/formatter/ruff.toml" "${XDG_CONFIG_HOME:-$HOME/.config}/ruff/ruff.toml"
+      ;;
     opencode)
       link_config "$script_dir/opencode/AGENTS.md" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/AGENTS.md"
       link_config "$script_dir/opencode/opencode.jsonc" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.jsonc"
@@ -125,7 +129,7 @@ while (($#)); do
   case $1 in
     --dry-run) dry_run=true ;;
     -h|--help) usage; exit 0 ;;
-    all) targets=(profile zsh git maven gradle neovim tmux vscode ghostty opencode) ;;
+    all) targets=(profile zsh git maven gradle neovim tmux vscode ghostty opencode formatter) ;;
     *) targets+=("$1") ;;
   esac
   shift
