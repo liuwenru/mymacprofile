@@ -67,8 +67,10 @@ set-hook -g session-created {
 }
 %endif
 # 如果过长则只显示 40 个字符长度（带省略号的截断 3.0+）
+# 按下前缀键后、下一个键按下之前，会话名变成黄底深色字加粗，作为前缀已生效的提醒；
+# #[] 里的多个属性用空格分隔，不能用逗号，否则会被 #{?...} 当成分支分隔符。
 %if #{m:3.*,#{version}}
-set -g status-left '[#{=/40/…:session_name}]=> '
+set -g status-left '#{?client_prefix,#[bg=#EBCB8B fg=#303030 bold],}[#{=/40/…:session_name}]#[default]=> '
 %endif
 
 # 前缀 + r：重新加载本配置文件（前缀 + Ctrl-u / u 在文件末尾也有绑定）。
@@ -112,25 +114,26 @@ bind + resize-pane -Z
 # Alt-3/Alt-6 一组（main-horizontal / 镜像），Alt-4/Alt-7 一组（main-vertical / 镜像）。
 # 做法：先记下当前布局再套用本键布局，布局没有变化说明已经是它，改套同组另一个；
 # 不记录"上次按了哪个键"，手动调整过面板大小后第一次按仍是套用本键布局。
+# 窗口只有一个面板时先自动分出一个（继承当前目录）再套用布局，否则布局键看不出效果。
 # （set -F 3.0+；镜像布局 3.5+，更低版本保持 tmux 默认布局键）
 # Mac 终端未开启 "Option 当 Meta 键" 时，Option-1..7 发出的是字符 ¡™£¢∞§¶（美式键盘布局），
 # 所以每个布局按字符再绑一份，行为与 Alt-1..7 相同；∞ 对应 tmux 默认的 Alt-5（tiled）。
 %if #{m:3.*,#{version}}
-bind M-1 set -wF @layout_before '#{window_layout}' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
-bind M-2 set -wF @layout_before '#{window_layout}' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
-bind ¡ set -wF @layout_before '#{window_layout}' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
-bind ™ set -wF @layout_before '#{window_layout}' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
+bind M-1 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
+bind M-2 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
+bind ¡ set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
+bind ™ set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
 bind ∞ select-layout tiled
 %endif
 %if #{m:3.[5-9]*,#{version}}
-bind M-3 set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
-bind M-6 set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
-bind M-4 set -wF @layout_before '#{window_layout}' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
-bind M-7 set -wF @layout_before '#{window_layout}' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
-bind £ set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
-bind § set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
-bind ¢ set -wF @layout_before '#{window_layout}' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
-bind ¶ set -wF @layout_before '#{window_layout}' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
+bind M-3 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
+bind M-6 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
+bind M-4 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
+bind M-7 set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
+bind £ set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
+bind § set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
+bind ¢ set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
+bind ¶ set -wF @layout_before '#{window_layout}' \; if-shell -F '#{==:#{window_panes},1}' 'split-window -c "#{pane_current_path}"' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
 %endif
 
 # 会话辅助键（沿用 Oh My Tmux 习惯）：

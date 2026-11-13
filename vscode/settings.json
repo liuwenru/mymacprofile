@@ -95,7 +95,7 @@
     "claude-desktop": false,
     "cursor-global": false,
     "cursor-workspace": false,
-    "windsurf": false
+    "windsurf": false,
   },
   "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
   // CMake 配置
@@ -327,13 +327,7 @@
   "hexeditor.defaultEndianness": "little",
   "hexeditor.inspectorType": "aside",
   "hexeditor.showDecodedText": true,
-  "http.noProxy": [
-    "*.epoint.com.cn",
-    "*.aliyun.*",
-    "192.168.0.0/16",
-    "172.0.0.0/8",
-    "127.0.0.1",
-  ],
+  "http.noProxy": ["*.epoint.com.cn", "*.aliyun.*", "192.168.0.0/16", "172.0.0.0/8", "127.0.0.1"],
   "http.proxy": "http://127.0.0.1:1080",
   "http.proxyStrictSSL": false,
   "http.proxySupport": "fallback",
@@ -449,7 +443,10 @@
   "terminal.integrated.profiles.linux": {
     "tmux": {
       // 存在 vscode session 则直接 attach，否则新建；tmux 非 0 退出时最多重试 3 次
-      "args": ["-c", "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5"],
+      "args": [
+        "-c",
+        "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5",
+      ],
       "icon": "terminal-tmux",
       "path": "bash",
     },
@@ -461,7 +458,10 @@
   "terminal.integrated.profiles.osx": {
     "tmux": {
       // 存在 vscode session 则直接 attach，否则新建；tmux 非 0 退出时最多重试 3 次
-      "args": ["-c", "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5"],
+      "args": [
+        "-c",
+        "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5",
+      ],
       "icon": "terminal-tmux",
       "path": "bash",
     },
@@ -478,16 +478,7 @@
   "terminal.integrated.tabs.location": "left",
   "terminal.integrated.tabs.title": "${cwdFolder}${separator}${process}${separator}${task}",
   // 代办插件
-  "todo-tree.general.tags": [
-    "BUG",
-    "HACK",
-    "FIXME",
-    "TODO",
-    "XXX",
-    "[ ]",
-    "[x]",
-    "epoint",
-  ],
+  "todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO", "XXX", "[ ]", "[x]", "epoint"],
   "todo-tree.ripgrep.ripgrep": "/usr/local/bin/rg",
   "update.mode": "manual",
   "update.showReleaseNotes": false,
@@ -538,7 +529,7 @@
     "https://www.schemastore.org/": true,
   },
   "markdown-preview-enhanced.revealjsTheme": "moon.css",
-  "markdown-preview-enhanced.previewTheme": "vscode.css",
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
   "claudeCode.preferredLocation": "panel",
   "claudeCode.hideOnboarding": true,
   "claudeCode.useTerminal": true,
