@@ -7,7 +7,7 @@
 # - %if 后面的条件不能加引号：2.8 不会去掉引号，"0" 也会被当成真。
 # - 2.8 不认识 {} 块，块内每行会被当成顶层命令执行，所以含 {} 的配置必须放进 %if；
 #   条件为假时 2.8 在解析前就整行跳过，不会碰到 {}。
-# 用到的模式：3.0+ 3.*、3.2+ 3.[2-9]*、3.3+ 3.[3-9]*、3.6+ 3.[6-9]*、3.7+ 3.[7-9]*
+# 用到的模式：3.0+ 3.*、3.2+ 3.[2-9]*、3.3+ 3.[3-9]*、3.5+ 3.[5-9]*、3.6+ 3.[6-9]*、3.7+ 3.[7-9]*
 
 # -----------------------------------------------------------------------------
 # General 通用设置
@@ -106,6 +106,32 @@ bind -r L resize-pane -R 5
 bind '>' swap-pane -D
 bind '<' swap-pane -U
 bind + resize-pane -Z
+
+# 前缀 + Alt-1..7：在 tmux 默认布局键上增加"再按一次切到同组另一个布局"：
+# Alt-1/Alt-2 一组（even-horizontal / even-vertical），
+# Alt-3/Alt-6 一组（main-horizontal / 镜像），Alt-4/Alt-7 一组（main-vertical / 镜像）。
+# 做法：先记下当前布局再套用本键布局，布局没有变化说明已经是它，改套同组另一个；
+# 不记录"上次按了哪个键"，手动调整过面板大小后第一次按仍是套用本键布局。
+# （set -F 3.0+；镜像布局 3.5+，更低版本保持 tmux 默认布局键）
+# Mac 终端未开启 "Option 当 Meta 键" 时，Option-1..7 发出的是字符 ¡™£¢∞§¶（美式键盘布局），
+# 所以每个布局按字符再绑一份，行为与 Alt-1..7 相同；∞ 对应 tmux 默认的 Alt-5（tiled）。
+%if #{m:3.*,#{version}}
+bind M-1 set -wF @layout_before '#{window_layout}' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
+bind M-2 set -wF @layout_before '#{window_layout}' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
+bind ¡ set -wF @layout_before '#{window_layout}' \; select-layout even-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-vertical'
+bind ™ set -wF @layout_before '#{window_layout}' \; select-layout even-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout even-horizontal'
+bind ∞ select-layout tiled
+%endif
+%if #{m:3.[5-9]*,#{version}}
+bind M-3 set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
+bind M-6 set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
+bind M-4 set -wF @layout_before '#{window_layout}' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
+bind M-7 set -wF @layout_before '#{window_layout}' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
+bind £ set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal-mirrored'
+bind § set -wF @layout_before '#{window_layout}' \; select-layout main-horizontal-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-horizontal'
+bind ¢ set -wF @layout_before '#{window_layout}' \; select-layout main-vertical \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical-mirrored'
+bind ¶ set -wF @layout_before '#{window_layout}' \; select-layout main-vertical-mirrored \; if-shell -F '#{==:#{@layout_before},#{window_layout}}' 'select-layout main-vertical'
+%endif
 
 # 会话辅助键（沿用 Oh My Tmux 习惯）：
 # 前缀 + Ctrl-c 新建会话；前缀 + Ctrl-f 输入会话名查找并切换。
