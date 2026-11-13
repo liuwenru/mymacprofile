@@ -1,76 +1,75 @@
 {
-  "C_Cpp.intelliSenseEngine": "disabled",
   "Lua.telemetry.enable": false,
   "[c]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
+    "editor.defaultFormatter": "ms-vscode.cpptools",
   },
   "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-containers",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "[dotenv]": {
-    "editor.defaultFormatter": "lumirelle.shell-format-rev"
+    "editor.defaultFormatter": "lumirelle.shell-format-rev",
   },
   "[go]": {
     // "editor.defaultFormatter": "golang.go",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports": "explicit",
     },
     "editor.defaultFormatter": "golang.go",
     "editor.formatOnSave": true,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": true,
   },
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[ignore]": {
-    "editor.defaultFormatter": "lumirelle.shell-format-rev"
+    "editor.defaultFormatter": "lumirelle.shell-format-rev",
   },
   "[java]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.quickSuggestions": {
-      "strings": true
+      "strings": true,
     },
-    "editor.suggest.insertMode": "replace"
+    "editor.suggest.insertMode": "replace",
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[jsonl]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[properties]": {
-    "editor.defaultFormatter": "lumirelle.shell-format-rev"
+    "editor.defaultFormatter": "lumirelle.shell-format-rev",
   },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "[shellscript]": {
     "editor.defaultFormatter": "lumirelle.shell-format-rev",
-    "files.eol": "\n"
+    "files.eol": "\n",
   },
   "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[xml]": {
-    "editor.defaultFormatter": "DotJoshJohnson.xml"
+    "editor.defaultFormatter": "DotJoshJohnson.xml",
   },
   "[yaml]": {
     "editor.autoIndent": "keep",
@@ -79,15 +78,16 @@
     "editor.quickSuggestions": {
       "comments": true,
       "other": true,
-      "strings": true
+      "strings": true,
     },
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "bookmarks.experimental.enableNewStickyEngine": true,
   "bookmarks.keepBookmarksOnLineDelete": true,
   "bookmarks.saveBookmarksInProject": true,
   "bookmarks.sideBar.expanded": true,
   "bookmarks.useWorkaroundForFormatters": true,
+  "C_Cpp.intelliSenseEngine": "disabled",
   "chat.disableAIFeatures": true,
   "chat.mcp.access": "none",
   "chat.mcp.discovery.enabled": {
@@ -104,7 +104,7 @@
     "cmake.configure",
     "cmake.buildWithTarget",
     "workbench.action.tasks.configureTaskRunner",
-    "workbench.action.tasks.runTask"
+    "workbench.action.tasks.runTask",
   ],
   "cmake.showOptionsMovedNotification": false,
   "containers.containerClient": "com.microsoft.visualstudio.containers.docker",
@@ -115,7 +115,7 @@
   "docker.extension.enableComposeLanguageServer": false,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "explicit",
   },
   "editor.copyWithSyntaxHighlighting": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -141,16 +141,9 @@
   "extensions.autoUpdate": "off",
   "extensions.verifySignature": false,
   "files.associations": {
-    "Dockerfile*": "dockerfile"
+    "Dockerfile*": "dockerfile",
   },
   "files.exclude": {
-    ".CF*": true,
-    ".CFUserTextEncoding": true,
-    ".DS_Store": true,
-    ".LfCache": true,
-    ".ShadowsocksX-NG": true,
-    ".Trash": true,
-    ".Xauthority": true,
     "._m2": true,
     ".appveyor.yml": true,
     ".arthas": true,
@@ -161,7 +154,6 @@
     ".bash_it": true,
     ".bash_logout": true,
     ".bash_profile": true,
-    ".bash-preexec.sh": true,
     ".bashrc*": true,
     ".bun": true,
     ".cache": true,
@@ -218,7 +210,6 @@
     ".myclirc": true,
     ".mysql_history": true,
     ".nmcli-history": true,
-    ".node_repl_history": true,
     ".node-gyp": true,
     ".node_repl_history": true,
     ".npm": true,
@@ -226,7 +217,6 @@
     ".nrmrc": true,
     ".nuget": true,
     ".nvm": true,
-    ".obsutilAppData": true,
     ".obsutil_checkpoint": true,
     ".obsutil_log": true,
     ".obsutilAppData": true,
@@ -238,7 +228,6 @@
     ".pre-commit-config.yaml": true,
     ".profile": true,
     ".profile.bak": true,
-    ".pyenv": true,
     ".python_history": true,
     ".redhat": true,
     ".rediscli_history": true,
@@ -256,17 +245,23 @@
     ".vim*": true,
     ".vnc": true,
     ".vscode*": true,
+    ".virgo-ssh.json": true,
     ".wget-hsts": true,
     ".wgetrc": true,
     ".Xauthority": true,
     ".yarn": true,
     ".yarnrc": true,
     ".zcompdump*": true,
-    ".zprofile": true,
-    ".zprofile.bak": true,
+    ".zprofile*": true,
+    ".zshenv*": true,
+    ".zshrc*": true,
+    ".agents": true,
+    ".codex": true,
+    ".dsh": true,
+    ".dsh-tui": true,
+    ".agent-browser": true,
+    ".dns-mihomo-*": true,
     ".zsh": true,
-    ".zsh_history": true,
-    ".zsh_sessions": true,
     ".zshDDPMenv": true,
     ".zshDDPMenv_bak": true,
     ".zsh_history": true,
@@ -279,7 +274,7 @@
     ".duckdb": true,
     ".bunvm": true,
     ".bash-preexec.sh": true,
-    ".pyenv": true
+    ".pyenv": true,
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -288,7 +283,7 @@
     "**/.svn": true,
     "**/node_modules/**": true,
     "/root/share": true,
-    "/root/tempwork": true
+    "/root/tempwork": true,
   },
   "git.allowForcePush": false,
   "git.autofetch": "all",
@@ -296,7 +291,7 @@
   "git.ignoreLegacyWarning": true,
   "git.openRepositoryInParentFolders": "always",
   "github.copilot.enable": {
-    "*": false
+    "*": false,
   },
   // GitLens：保留基础 Git 功能，隐藏或关闭付费及在线增值功能
   "gitlens.advanced.skipOnboarding": true,
@@ -320,7 +315,7 @@
     "fileHistory": true,
     "repositories": true,
     "searchAndCompare": false,
-    "launchpad": false
+    "launchpad": false,
   },
   "go.toolsManagement.autoUpdate": true,
   // golang 配置
@@ -336,7 +331,7 @@
     "*.aliyun.*",
     "192.168.0.0/16",
     "172.0.0.0/8",
-    "127.0.0.1"
+    "127.0.0.1",
   ],
   "http.proxy": "http://192.168.188.8:1080",
   "http.proxyStrictSSL": false,
@@ -348,13 +343,13 @@
   "java.configuration.runtimes": [
     {
       "name": "JavaSE-1.8",
-      "path": "~/.jabba/jdk/1.8.362-openjdk"
+      "path": "~/.jabba/jdk/1.8.362-openjdk",
     },
     {
       "default": true,
       "name": "JavaSE-11",
-      "path": "~/.jabba/jdk/11.0.21-openjdk"
-    }
+      "path": "~/.jabba/jdk/11.0.21-openjdk",
+    },
   ],
   "java.format.enabled": false,
   // java 配置
@@ -363,8 +358,8 @@
   "java.imports.gradle.wrapper.checksums": [
     {
       "sha256": "5838368346825dd56aeacdc3425909f112b4cbaa72adb16da8a303e3622f1547",
-      "allowed": true
-    }
+      "allowed": true,
+    },
   ],
   "java.jdt.ls.java.home": "~/.jabba/jdk/21.0.7-openjdk/",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx10G -Xms100m -Xlog:disable",
@@ -400,9 +395,10 @@
   "python.terminal.useEnvFile": true,
   "redhat.telemetry.enabled": false,
   "remote.defaultExtensionsIfInstalledLocally": [
+    "charliermarsh.ruff",
     "GitHub.copilot",
     "GitHub.copilot-chat",
-    "GitHub.vscode-pull-request-github"
+    "GitHub.vscode-pull-request-github",
   ],
   "remote.SSH.enableRemoteCommand": true,
   "remote.SSH.externalSSH_ASKPASS": true,
@@ -417,7 +413,7 @@
       "name": "192.168.188.150-amd64",
       "privateKeyPath": "/Users/liuwenru/.ssh/id_rsa_work",
       "root": "/root/",
-      "username": "root"
+      "username": "root",
     },
     {
       "agent": "$SSH_AUTH_SOCK",
@@ -425,15 +421,15 @@
       "name": "192.168.182.150-aarch64",
       "privateKeyPath": "/Users/liuwenru/.ssh/id_rsa_work",
       "root": "/root/",
-      "username": "root"
+      "username": "root",
     },
     {
       "host": "192.168.203.10",
       "name": "192.168.203.10-fdoc",
       "privateKeyPath": "/Users/liuwenru/.ssh/id_rsa_work",
       "root": "/root",
-      "username": "root"
-    }
+      "username": "root",
+    },
   ],
   "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.defaultProfile.osx": "zsh",
@@ -451,27 +447,27 @@
       // 存在 vscode session 则直接 attach，否则新建；tmux 非 0 退出时最多重试 3 次
       "args": ["-c", "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5"],
       "icon": "terminal-tmux",
-      "path": "bash"
+      "path": "bash",
     },
     "zsh": {
       "args": ["-l", "-i"],
-      "path": "zsh"
-    }
+      "path": "zsh",
+    },
   },
   "terminal.integrated.profiles.osx": {
     "tmux": {
       // 存在 vscode session 则直接 attach，否则新建；tmux 非 0 退出时最多重试 3 次
       "args": ["-c", "for i in 1 2 3; do tmux new -A -s vscode && exit 0; echo \"tmux 异常退出（第 $i/3 次），1 秒后重试\"; sleep 1; done; echo \"tmux 已连续失败 3 次，停止重试\"; sleep 5"],
       "icon": "terminal-tmux",
-      "path": "bash"
+      "path": "bash",
     },
     "zsh": {
       "args": ["-l"],
-      "path": "zsh"
-    }
+      "path": "zsh",
+    },
   },
   "terminal.integrated.suggest.providers": {
-    "lsp": false
+    "lsp": false,
     // removed invalid property: "vscode.terminal-suggest"
   },
   "terminal.integrated.tabs.description": "${task}${separator}${local}${separator}${process}",
@@ -486,7 +482,7 @@
     "XXX",
     "[ ]",
     "[x]",
-    "epoint"
+    "epoint",
   ],
   "todo-tree.ripgrep.ripgrep": "/usr/local/bin/rg",
   "update.mode": "manual",
@@ -502,7 +498,7 @@
     "vscode-kubernetes.minikube-path-linux": "~/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube",
     "vscode-kubernetes.minikube-path-mac": "/Users/liuwenru/.vs-kubernetes/tools/minikube/darwin-arm64/minikube",
     "vscode-kubernetes.minikube-path.linux": "~/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube",
-    "vscode-kubernetes.minikube-path.mac": "~/.vs-kubernetes/tools/minikube/darwin-amd64/minikube"
+    "vscode-kubernetes.minikube-path.mac": "~/.vs-kubernetes/tools/minikube/darwin-amd64/minikube",
   },
   "vsicons.dontShowNewVersionMessage": true,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -512,7 +508,7 @@
     "editor.selectionHighlightBackground": "#4d5566cc",
     "editor.wordHighlightBackground": "#3a4150cc",
     "editor.wordHighlightStrongBackground": "#61afeedd",
-    "minimap.background": "#00002299"
+    "minimap.background": "#00002299",
   },
   "workbench.colorTheme": "Atom One Dark",
   "workbench.editor.empty.hint": "hidden",
@@ -520,7 +516,7 @@
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editorAssociations": {
     "{hexdiff}:/**/*.*": "hexEditor.hexedit",
-    "*.zip": "compressPreview"
+    "*.zip": "compressPreview",
   },
   "workbench.iconTheme": "vscode-icons",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
@@ -535,6 +531,6 @@
     "https://raw.githubusercontent.com/microsoft/vscode/": true,
     "https://schemastore.azurewebsites.net/": true,
     "https://spec.openapis.org/": true,
-    "https://www.schemastore.org/": true
-  }
+    "https://www.schemastore.org/": true,
+  },
 }

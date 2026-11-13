@@ -28,7 +28,6 @@
 | `ghostty/` | Ghostty 终端配置，链接为 `~/.config/ghostty/config` |
 | `terminal/` | macOS Terminal 主题及 Zsh 工具参考资料 |
 | `docker/` | Docker daemon 配置示例 |
-| `completions/` | Docker、kubectl 等 Zsh 补全脚本 |
 | `linux_dev/` | Linux 离线开发产物、FUSE/SSHFS 文件及辅助脚本 |
 | `mac_dev/`、`win_dev/` | macOS、Windows 专用配置和历史资料 |
 | `opencode/` | OpenCode 全局规则与配置 |
