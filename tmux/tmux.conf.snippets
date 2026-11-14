@@ -7,7 +7,7 @@
 # - %if 后面的条件不能加引号：2.8 不会去掉引号，"0" 也会被当成真。
 # - 2.8 不认识 {} 块，块内每行会被当成顶层命令执行，所以含 {} 的配置必须放进 %if；
 #   条件为假时 2.8 在解析前就整行跳过，不会碰到 {}。
-# 用到的模式：3.0+ 3.*、3.2+ 3.[2-9]*、3.3+ 3.[3-9]*、3.5+ 3.[5-9]*、3.6+ 3.[6-9]*、3.7+ 3.[7-9]*
+# 用到的模式：3.0+ 3.*、3.2+ 3.[2-9]*、3.3+ 3.[3-9]*、3.5+ 3.[5-9]*、3.6+ 3.[6-9]*、3.7+ 3.[7-9]*、3.8+ 3.[8-9]*
 
 # -----------------------------------------------------------------------------
 # General 通用设置
@@ -96,6 +96,27 @@ bind - split-window -v -c '#{pane_current_path}'
 bind -r h select-pane -L
 bind -r j select-pane -D
 bind -r k select-pane -U
+# 解除默认的 前缀 + o（切换到下一个面板）。
+unbind o
+# 前缀 + q：显示面板编号并一直停留（默认 1 秒后消失），按数字跳到对应面板，
+# 按 Esc、q 或其他任意键退出。
+bind q display-panes -d 0
+# 前缀 + g：进入浮动面板的移动键表（tmux 3.8 默认键），这里加一条状态栏提示，
+# 提示会停留到按下一个键为止；表内其余的键沿用 tmux 默认绑定。（浮动面板 3.8+）
+# 移动键表内：h/j/k/l 把浮动面板向左/下/上/右移动，每次 3 格；
+# H/L 变窄/变宽、K/J 变矮/变高（左上角不动，移动的是右边框和下边框）。
+# 每条末尾再次进入移动键表，所以可以一直连按，按 Esc 等表内没有的键退出。
+%if #{m:3.[8-9]*,#{version}}
+bind g switch-client -T move \; display-message 'pane move: hjkl move | HJKL resize | 1-4 corner | arrows edge | 0 fill | , menu | other key exit'
+bind -T move h move-pane -L 3 \; switch-client -T move
+bind -T move j move-pane -D 3 \; switch-client -T move
+bind -T move k move-pane -U 3 \; switch-client -T move
+bind -T move l move-pane -R 3 \; switch-client -T move
+bind -T move H resize-pane -R -3 \; switch-client -T move
+bind -T move J resize-pane -D 3 \; switch-client -T move
+bind -T move K resize-pane -D -3 \; switch-client -T move
+bind -T move L resize-pane -R 3 \; switch-client -T move
+%endif
 
 # 前缀 + H/J/K/L：调整面板大小，每次 5 格，可连续按。
 bind -r H resize-pane -L 5
