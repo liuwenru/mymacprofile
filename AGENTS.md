@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本文档用于指导 Codex 在本仓库中工作。开始修改前，应先阅读根目录 `README.md`、目标目录内的 `README.md`，并重新读取将要修改的配置文件；文档中标记为 `Reference Documentation` 的资料应作为重点约束。
+本文档用于指导 Codex、Claude Code 等编码 agent 在本仓库中工作。开始修改前，应先阅读根目录 `README.md`、目标目录内的 `README.md`，并重新读取将要修改的配置文件；文档中标记为 `Reference Documentation` 的资料应作为重点约束。
 
 ## 仓库定位
 
@@ -25,6 +25,8 @@
 | `neovim/` | 基于 LazyVim 的 Neovim 配置 |
 | `tmux/` | 基于旧版 Oh My Tmux 快照的稳定配置 |
 | `vscode/` | VS Code 设置、快捷键和配置导出脚本 |
+| `ghostty/` | Ghostty 终端配置，链接为 `~/.config/ghostty/config` |
+| `formatter/` | 格式化工具配置；`formatter` 目标链接 `.editorconfig` 到 `~/.editorconfig`、`ruff.toml` 到 `~/.config/ruff/ruff.toml` |
 | `terminal/` | macOS Terminal 主题及 Zsh 工具参考资料 |
 | `docker/` | Docker daemon 配置示例 |
 | `linux_dev/` | Linux 离线开发产物、FUSE/SSHFS 文件及辅助脚本 |
@@ -38,7 +40,7 @@
 顶层 `install.sh` 是主要安装入口，支持以下目标：
 
 ```text
-profile git maven gradle neovim tmux vscode opencode all
+profile zsh git maven gradle neovim tmux vscode ghostty opencode formatter all
 ```
 
 安装前应优先使用 dry-run：
@@ -53,6 +55,8 @@ profile git maven gradle neovim tmux vscode opencode all
 ```bash
 ./install.sh profile git
 ```
+
+各目标的链接关系：`zsh` 链接 `~/.zshenv`、`~/.zprofile`、`~/.zshrc`，zsh 由此直接从仓库加载 `profile/`，无需再手工 source；`profile` 把 `profile/` 链接到 `~/.config/mymacprofile/profile`，供 bash 在 `~/.bashrc` 中 source `profile.sh`（安装器打印的“加入 rc 文件”提示只对 bash 有意义）。
 
 安装器在目标已存在时会创建带时间戳的备份，然后建立指向仓库文件的软链接。各工具目录中的 `install.sh` 通常只负责定位自身路径并转发到顶层安装器，不要重复实现安装逻辑。
 
@@ -91,6 +95,9 @@ zsh 由 `zsh/` 下的三个文件接管，bash 入口为 `profile/profile.sh`，
 
 - `profile/default.conf` 是 Shadowrocket 分流配置，不是 Shell profile。修改前应查看文件头部链接的 Shadowrocket 配置手册，注意规则自上而下匹配，`FINAL` 必须作为兜底项。
 - `maven/settings.xml` 通过 `EPOINT_NEXUS_USERNAME`、`EPOINT_NEXUS_PASSWORD`、`CLOUD_MAVEN_USERNAME`、`CLOUD_MAVEN_PASSWORD` 读取凭据，不得写回明文密码。
+- 以下文件修改后，需同步更新 `~/tools/AlfredConfigure/Alfred.alfredpreferences/snippets/` 中对应 Alfred snippet JSON 的 `alfredsnippet.snippet` 字段（用于在远程机器上粘贴）。JSON 需用解析器读写，保持其他字段不变。若本机不存在 `~/tools/AlfredConfigure`，说明当前运行在 Linux 工作机而非 Mac 上，跳过此步。
+  - `profile/bashfunc.sh` -> `bashfunctions/setbashfunc [B83C4069-C80F-4F42-BA39-DA30D3636AB2].json`，内容即函数本身。
+  - `tmux/tmux.conf.snippets` -> `work/settmux [1F0A45CD-3FD3-4653-B90A-74A768040DF0].json`，内容外层包有 `set +o history`、`cat <<EOF | tee ~/.tmux.conf` 和结尾 `EOF`、`set -o history` 四行，只替换中间部分；由于 heredoc 未加引号，同步前确认配置里没有会被 shell 展开的 `$`、反引号或 `\\`。
 - `neovim/` 来自 LazyVim starter，修改前参考 `neovim/README.md` 和 LazyVim 官方文档。
 - `tmux/tmux.conf` 目前作为稳定的旧配置保留，现代化迁移应单独进行，不要顺手改变现有快捷键和插件行为。
 - `linux_dev/fuse3-aarch64/` 和 `linux_dev/fuse3-x86_64/` 包含离线二进制、静态库和高权限 mount helper。来源信息尚不完整，不要随意覆盖或视为可验证发布制品。

@@ -3,3 +3,6 @@
 # Machine-local profile values and credentials
 profile/local.sh
 *.local
+
+# 实验性改动前的备份：隐藏文件 + 原名 + 标记 + 时间戳（YYYY-MM-DD-HH-MM-SS）
+.*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]

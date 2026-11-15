@@ -1,5 +1,9 @@
 # Interactive settings shared by Bash and Zsh; environment lives in env.sh.
-export TERM=xterm-256color
+# 优先沿用连接方（ssh 客户端、tmux、终端模拟器）传入的 TERM；只有未设置，或本机没有
+# 对应 terminfo（例如从 Ghostty ssh 到没装 xterm-ghostty 的主机）时才回退。
+if [[ -z ${TERM:-} ]] || ! infocmp "$TERM" >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
 
 export UV_SYSTEM_CERTS=1
 # Existing aliases are intentionally preserved during the first migration.

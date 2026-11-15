@@ -2,6 +2,23 @@
 # profile/env.sh (loaded by ~/.zshenv); every tool below is optional.
 _mymacprofile_root=${${(%):-%x}:A:h:h}
 
+# uv/uvx 的补全脚本很大（uv 约 570KB），每次启动都生成并 eval 要 200ms 左右。改为缓存到
+# fpath 目录下的 _uv/_uvx：只有二进制比缓存新才重新生成，compinit 按 #compdef 头登记，
+# 第一次按 Tab 时才真正加载。必须放在下面的 fpath 和 compinit 之前，新生成的文件才能在本次会话生效。
+for _cmd _flag in uv generate-shell-completion uvx --generate-shell-completion; do
+  (( $+commands[$_cmd] )) || continue
+  _completion="$HOME/.zsh/completions/_$_cmd"
+  if [[ ! -s $_completion || $commands[$_cmd] -nt $_completion ]]; then
+    mkdir -p "${_completion:h}"
+    if "$_cmd" "$_flag" zsh > "$_completion.$$" 2>/dev/null && [[ -s $_completion.$$ ]]; then
+      mv -f "$_completion.$$" "$_completion"
+    else
+      rm -f "$_completion.$$"
+    fi
+  fi
+done
+unset _cmd _flag _completion
+
 # Load user-generated completions before compinit scans the function path.
 fpath=(
   $HOME/.zsh/completions(N/)
@@ -60,8 +77,6 @@ fi
 unset _opencode_bin _opencode_completion
 
 (( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow --disable-ai)"
-(( $+commands[uv] )) && eval "$(uv generate-shell-completion zsh)"
-(( $+commands[uvx] )) && eval "$(uvx --generate-shell-completion zsh)"
 (( $+commands[mole] )) && eval "$(mole completion zsh 2>/dev/null)"
 (( $+commands[dircolors] )) && eval "$(dircolors -b)"
 export LS_COLORS="${LS_COLORS}:di=38;5;39:ow=38;5;39:tw=38;5;39:st=38;5;39:ex=38;5;82"

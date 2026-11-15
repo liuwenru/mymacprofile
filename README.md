@@ -11,6 +11,7 @@
 | `git/` | Git 全局配置和 ignore 规则 |
 | `maven/`、`gradle/` | Java 构建工具配置 |
 | `neovim/`、`tmux/`、`vscode/`、`ghostty/` | 编辑器和终端工具配置 |
+| `formatter/` | `.editorconfig` 之外的格式化工具配置（ruff） |
 | `docker/` | Docker daemon 配置示例 |
 | `linux_dev/`、`mac_dev/`、`win_dev/` | 平台专用配置或历史产物 |
 | `opencode/` | OpenCode 全局约定 |
@@ -29,6 +30,8 @@
 ./install.sh profile git maven
 ```
 
+可用目标：`profile zsh git maven gradle neovim tmux vscode ghostty opencode formatter all`。
+
 Neovim 可以通过顶层安装器或目录内的快捷脚本单独安装：
 
 ```bash
@@ -39,7 +42,7 @@ Neovim 可以通过顶层安装器或目录内的快捷脚本单独安装：
 
 安装器会把 `~/.config/nvim` 链接到仓库中的 `neovim/`；已有配置会先按时间戳备份。
 
-如果目标文件已经存在，脚本会先创建带时间戳的备份，再建立软链接。Profile 安装完成后，在 `~/.bashrc` 和 `~/.zshrc` 中按需加入：
+如果目标文件已经存在，脚本会先创建带时间戳的备份，再建立软链接。Zsh 安装 `zsh` 目标即可，`~/.zshrc` 会直接从仓库加载 `profile/profile.sh`，无需再手工 source。Bash 在 `profile` 目标安装完成后，在 `~/.bashrc` 中加入：
 
 ```bash
 source "${XDG_CONFIG_HOME:-$HOME/.config}/mymacprofile/profile/profile.sh"

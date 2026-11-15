@@ -2,7 +2,6 @@
 # Loaded by ~/.zshenv (zsh) and profile.sh (bash). Keep it silent and fast:
 # no output, no external commands, only exports guarded by existence checks.
 
-export LC_TIME=POSIX
 export LANG=en_US.UTF-8
 export LC_ALL=$LANG
 export TZ="Asia/Shanghai"

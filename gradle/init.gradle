@@ -1,6 +1,7 @@
 def repoUrl = "http://192.168.0.99:8081/nexus/content/groups/public/"
 def repoUsername = "epointyanfa"
-def repoPassword = "epoint_yanfa"
+// 优先读取环境变量（与 maven/settings.xml 一致），未设置时回退到默认值。
+def repoPassword = System.getenv("EPOINT_NEXUS_PASSWORD") ?: "epoint_yanfa"
 gradle.beforeSettings { settings ->
     settings.pluginManagement {
         repositories {
@@ -35,7 +36,7 @@ allprojects {
         allowInsecureProtocol = true
         credentials {
                 username = 'epointyanfa'
-                password = 'epoint_yanfa'
+                password = repoPassword
         }
       }
       mavenCentral()
@@ -55,7 +56,7 @@ allprojects {
         allowInsecureProtocol = true
         credentials {
                 username = 'epointyanfa'
-                password = 'epoint_yanfa'
+                password = repoPassword
         }
       }
       mavenCentral()
