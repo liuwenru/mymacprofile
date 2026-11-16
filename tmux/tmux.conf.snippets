@@ -29,9 +29,10 @@ set -g display-time 0
 %if #{m:3.[3-9]*,#{version}}
 set -g allow-passthrough on
 %endif
-# 告诉 tmux：xterm 兼容的外层终端支持 OSC 52 剪贴板（terminal-features 3.2+）。
+# 告诉 tmux：Ghostty/xterm 以及嵌套的 screen/tmux 外层支持 OSC 52 剪贴板；
+# 从本地 tmux 内 SSH 到远端时，远端看到的 TERM 通常是 screen-256color（terminal-features 3.2+）。
 %if #{m:3.[2-9]*,#{version}}
-set -as terminal-features ',xterm*:clipboard'
+set -as terminal-features ',xterm*:clipboard,screen*:clipboard,tmux*:clipboard'
 %endif
 # 3.7 及以上使用 tmux 原生 OSC 52 剪贴板支持，更低版本关闭剪贴板集成。
 %if #{m:3.[7-9]*,#{version}}
@@ -249,20 +250,21 @@ bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}
 %endif
 
 # 右键 pane 后即使已经松开，菜单也保持显示；再单击菜单项执行，单击菜单外或按 q 关闭（3.7+）。
-# -O 是菜单保持打开的关键；复制选区显式使用 -t=，确保操作右键打开菜单时所在的 pane。
-# 面板内程序正在接收鼠标时，普通右键仍转发给程序；Alt-右键始终打开 tmux 菜单。
+# 在右键松开时打开菜单，避免打开它的同一次松开事件误选菜单项；-O 允许松开后继续选择。
+# 先解除旧的按下绑定，保证重载配置后不会同时触发两次菜单。
+# 菜单复制用 -d 0 排到下一轮执行：先关闭菜单，再发 OSC 52，避免菜单期间剪贴板输出被抑制。
+# pane_id 在菜单创建时展开，固定为打开菜单的面板。
+# 普通右键始终由 tmux 打开菜单，不转发给 pane 内开启鼠标上报的程序；Alt-右键行为相同。
 # tmux 3.7b 已支持 -O；2.8 没有 display-menu，3.1 的 display-menu 没有 -O，继续使用默认绑定。
 # 为兼容 3.7，这里的菜单不包含 3.8 才有的浮动 pane、行号和刷新控制；这些功能仍可用原快捷键操作。
+# 3.7 的 set-buffer 不会发送 OSC 52，因此复制项只保留走 copy-selection-and-cancel 的 Copy Selected Text。
 %if #{m:3.[7-9]*,#{version}}
-bind -n MouseDown3Pane if-shell -Ft= \
-  '#{||:#{mouse_any_flag},#{&&:#{pane_in_mode},#{?#{m/r:(copy|view)-mode,#{pane_mode}},0,1}}}' {
-  select-pane -t=
-  send-keys -M
-} {
+unbind -n MouseDown3Pane
+bind -n MouseUp3Pane {
   display-menu -O -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Top,}' '<' { send-keys -X history-top } \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Bottom,}' '>' { send-keys -X history-bottom } \
-    '#{?selection_present,Copy Selected Text,}' 'y' { send-keys -Xt= copy-selection-and-cancel } \
+    '#{?selection_present,Copy Selected Text,}' 'y' { run-shell -d 0 -C "send-keys -t #{pane_id} -X copy-selection-and-cancel" } \
     '' \
     '#{?#{&&:#{buffer_size},#{!:#{pane_in_mode}}},Paste #[underscore]#{=/9/...:buffer_sample},}' 'p' {
       paste-buffer
@@ -276,22 +278,10 @@ bind -n MouseDown3Pane if-shell -Ft= \
       copy-mode -q
       send-keys -l -- '#{q:mouse_word}'
     } \
-    '#{?mouse_word,Copy Word Under Mouse: #[underscore]#{=/9/...:mouse_word},}' 'c' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_word}'
-    } \
-    '#{?mouse_line,Copy Line Under Mouse,}' 'l' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_line}'
-    } \
     '' \
     '#{?mouse_hyperlink,Type #[underscore]#{=/9/...:mouse_hyperlink},}' 'C-h' {
       copy-mode -q
       send-keys -l -- '#{q:mouse_hyperlink}'
-    } \
-    '#{?mouse_hyperlink,Copy Link Under Mouse: #[underscore]#{=/9/...:mouse_hyperlink},}' 'h' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_hyperlink}'
     } \
     '#{?#{!:#{pane_floating_flag}},Horizontal Split,}' 'h' { split-window -h } \
     '#{?#{!:#{pane_floating_flag}},Vertical Split,}' 'v' { split-window -v } \
@@ -305,11 +295,12 @@ bind -n MouseDown3Pane if-shell -Ft= \
     '#{?pane_marked,Unmark,Mark}' 'm' { select-pane -m } \
     '#{?#{>:#{window_panes},1},,-}#{?window_zoomed_flag,Unzoom,Zoom}' 'z' { resize-pane -Z }
 }
-bind -n M-MouseDown3Pane {
+unbind -n M-MouseDown3Pane
+bind -n M-MouseUp3Pane {
   display-menu -O -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Top,}' '<' { send-keys -X history-top } \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Bottom,}' '>' { send-keys -X history-bottom } \
-    '#{?selection_present,Copy Selected Text,}' 'y' { send-keys -Xt= copy-selection-and-cancel } \
+    '#{?selection_present,Copy Selected Text,}' 'y' { run-shell -d 0 -C "send-keys -t #{pane_id} -X copy-selection-and-cancel" } \
     '' \
     '#{?#{&&:#{buffer_size},#{!:#{pane_in_mode}}},Paste #[underscore]#{=/9/...:buffer_sample},}' 'p' {
       paste-buffer
@@ -323,22 +314,10 @@ bind -n M-MouseDown3Pane {
       copy-mode -q
       send-keys -l -- '#{q:mouse_word}'
     } \
-    '#{?mouse_word,Copy Word Under Mouse: #[underscore]#{=/9/...:mouse_word},}' 'c' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_word}'
-    } \
-    '#{?mouse_line,Copy Line Under Mouse,}' 'l' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_line}'
-    } \
     '' \
     '#{?mouse_hyperlink,Type #[underscore]#{=/9/...:mouse_hyperlink},}' 'C-h' {
       copy-mode -q
       send-keys -l -- '#{q:mouse_hyperlink}'
-    } \
-    '#{?mouse_hyperlink,Copy Link Under Mouse: #[underscore]#{=/9/...:mouse_hyperlink},}' 'h' {
-      copy-mode -q
-      set-buffer -- '#{q:mouse_hyperlink}'
     } \
     '#{?#{!:#{pane_floating_flag}},Horizontal Split,}' 'h' { split-window -h } \
     '#{?#{!:#{pane_floating_flag}},Vertical Split,}' 'v' { split-window -v } \
