@@ -117,6 +117,7 @@ install_target() {
     opencode)
       link_config "$script_dir/opencode/AGENTS.md" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/AGENTS.md"
       link_config "$script_dir/opencode/opencode.jsonc" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.jsonc"
+      link_config "$script_dir/opencode/cli.json" "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/cli.json"
       ;;
     *)
       printf 'Unknown target: %s\n' "$1" >&2
