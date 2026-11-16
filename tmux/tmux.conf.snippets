@@ -250,18 +250,19 @@ bind -T root MouseDrag1Pane if-shell -F '#{||:#{pane_in_mode},#{mouse_any_flag}}
 %endif
 
 # 右键 pane 后即使已经松开，菜单也保持显示；再单击菜单项执行，单击菜单外或按 q 关闭（3.7+）。
-# 在右键松开时打开菜单，避免打开它的同一次松开事件误选菜单项；-O 允许松开后继续选择。
+# 在右键松开时打开菜单，因此菜单会保留到下一次点击；左键按下定位菜单项、松开执行。
+# 不加 -O：该模式依赖之前的悬停高亮，SecureCRT 未发送悬停事件时会关闭菜单却不执行。
 # 先解除旧的按下绑定，保证重载配置后不会同时触发两次菜单。
 # 菜单复制用 -d 0 排到下一轮执行：先关闭菜单，再发 OSC 52，避免菜单期间剪贴板输出被抑制。
 # pane_id 在菜单创建时展开，固定为打开菜单的面板。
 # 普通右键始终由 tmux 打开菜单，不转发给 pane 内开启鼠标上报的程序；Alt-右键行为相同。
-# tmux 3.7b 已支持 -O；2.8 没有 display-menu，3.1 的 display-menu 没有 -O，继续使用默认绑定。
+# 自定义菜单沿用 3.7+ 版本门槛；更低版本继续使用默认绑定。
 # 为兼容 3.7，这里的菜单不包含 3.8 才有的浮动 pane、行号和刷新控制；这些功能仍可用原快捷键操作。
 # 3.7 的 set-buffer 不会发送 OSC 52，因此复制项只保留走 copy-selection-and-cancel 的 Copy Selected Text。
 %if #{m:3.[7-9]*,#{version}}
 unbind -n MouseDown3Pane
 bind -n MouseUp3Pane {
-  display-menu -O -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
+  display-menu -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Top,}' '<' { send-keys -X history-top } \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Bottom,}' '>' { send-keys -X history-bottom } \
     '#{?selection_present,Copy Selected Text,}' 'y' { run-shell -d 0 -C "send-keys -t #{pane_id} -X copy-selection-and-cancel" } \
@@ -297,7 +298,7 @@ bind -n MouseUp3Pane {
 }
 unbind -n M-MouseDown3Pane
 bind -n M-MouseUp3Pane {
-  display-menu -O -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
+  display-menu -t= -xM -yM -T '#[align=centre]#{pane_index} (#{pane_id})' \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Top,}' '<' { send-keys -X history-top } \
     '#{?#{m/r:(copy|view)-mode,#{pane_mode}},Go To Bottom,}' '>' { send-keys -X history-bottom } \
     '#{?selection_present,Copy Selected Text,}' 'y' { run-shell -d 0 -C "send-keys -t #{pane_id} -X copy-selection-and-cancel" } \
