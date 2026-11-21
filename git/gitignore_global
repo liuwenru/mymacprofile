@@ -23,3 +23,5 @@ node_modules
 
 # clangd 
 .cache
+
+**/.claude/settings.local.json
